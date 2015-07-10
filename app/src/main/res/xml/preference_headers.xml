@@ -1,0 +1,13 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header android:fragment="com.example.eugene.custompreferenceapp.SettingsActivity$Prefs1Fragment"
+        android:title="Настройки аккаунта"
+        android:summary="Персональные настройки аккаунта" />
+
+    <header android:fragment="com.example.eugene.custompreferenceapp.SettingsActivity$Prefs2Fragment"
+        android:title="Дополнительные настройки"
+        android:summary="Дополнительные настройки аккаунта">
+        <extra android:name="resource" android:value="mypreferences" />
+    </header>
+
+</preference-headers>
