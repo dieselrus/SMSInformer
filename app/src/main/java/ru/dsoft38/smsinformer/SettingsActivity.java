@@ -1,6 +1,7 @@
 package ru.dsoft38.smsinformer;
 
 import android.annotation.TargetApi;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -17,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.widget.TimePicker;
 
 
 import java.util.List;
@@ -40,7 +42,7 @@ public class SettingsActivity extends PreferenceActivity {
      * shown on tablets.
      */
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
-
+    private TimePickerDialog ttd = null;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -72,10 +74,10 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.pref_data_sync);
 
         // Add 'data and sync' preferences, and a corresponding header.
-        fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_notifications);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_notification);
+        //fakeHeader = new PreferenceCategory(this);
+        //fakeHeader.setTitle(R.string.pref_header_notifications);
+        //getPreferenceScreen().addPreference(fakeHeader);
+        //addPreferencesFromResource(R.xml.pref_notification);
 
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
@@ -84,8 +86,10 @@ public class SettingsActivity extends PreferenceActivity {
         bindPreferenceSummaryToValue(findPreference("mail_password"));
         bindPreferenceSummaryToValue(findPreference("mail_host"));
         bindPreferenceSummaryToValue(findPreference("mail_store_protocol"));
-        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+        //bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+        bindPreferenceSummaryToValue(findPreference("time_sms_send_first"));
+        bindPreferenceSummaryToValue(findPreference("time_sms_send_last"));
     }
 
     /**
@@ -264,11 +268,36 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
                                          Preference preference) {
-        //if (preference == startDatePref) {
-        //    new DatePickerDialog(this, this, year, monthOfYear, dayOfMonth).show();
-        //}
+        if (preference.getKey().equals("time_sms_send_first")) {
+            //new DatePickerDialog(this, this, year, monthOfYear, dayOfMonth).show();
+            ttd = new TimePickerDialog(this, myCallBack, 1, 1, true);
+
+            ttd.show();
+        }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
+    TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            //myHour = hourOfDay;
+            //myMinute = minute;
+            //tvTime.setText("Time is " + myHour + " hours " + myMinute + " minutes");
+            preference.putString(key + TIME_HOURS_KEY, hour);
+            preference.putString(key + TIME_MINUTE_KEY, minute);
+            preference.commit();
+        }
+    };
+
+    public static int getHour(String time) {
+        String[] pieces=time.split(":");
+
+        return(Integer.parseInt(pieces[0]));
+    }
+
+    public static int getMinute(String time) {
+        String[] pieces=time.split(":");
+
+        return(Integer.parseInt(pieces[1]));
+    }
 }

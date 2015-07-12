@@ -22,7 +22,7 @@
     <EditTextPreference
         android:key="mail_host"
         android:title="@string/pref_title_mail_host"
-        android:defaultValue="@string/pref_default_default_mail_host"
+        android:defaultValue="@string/pref_default_mail_host"
         android:selectAllOnFocus="true"
         android:inputType="textCapWords"
         android:capitalize="words"
