@@ -14,19 +14,22 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Pref.getPref(context);
         scheduleAlarms(context);
     }
 
     static void scheduleAlarms(Context context) {
         long NOW = Calendar.getInstance().getTimeInMillis();
-        startMailService(context, NOW);
+        startInformerService(context, NOW);
     }
 
     static void scheduleAlarms(Context ctxt, long TIME) {
-        startMailService(ctxt, TIME);
+        startInformerService(ctxt, TIME);
     }
 
-    static void startMailService(Context context, long UTIME) {
+    static void startInformerService(Context context, long UTIME) {
+        Pref.getPref(context);
+
         Intent i = new Intent(context, InformerService.class);
         i.setAction(InformerService.SET_ALARM);
         i.putExtra("utime", UTIME);

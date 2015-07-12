@@ -19,12 +19,17 @@ public class MailReader extends Authenticator{
 
     private static final String TAG = "MailReader";
 
-    private String mailhost = "imap.yandex.ru";
+    private String mailhost = Pref.prefMailHost;
     private Session session;
     private Store store;
     private Context context;
 
     public MailReader(Context context, String user, String password) {
+
+        if(Pref.prefMailHost == "" || Pref.prefMailHost == null ||
+                Pref.prefMailAddress == "" || Pref.prefMailAddress == null ||
+                Pref.prefMailProtocol == "" || Pref.prefMailProtocol == null)
+            return;
 
         this.context = context;
 
@@ -32,7 +37,7 @@ public class MailReader extends Authenticator{
         if (props == null){
             Log.e(TAG, "Properties are null !!");
         }else{
-            props.setProperty("mail.store.protocol", "imaps");
+            props.setProperty("mail.store.protocol", Pref.prefMailProtocol);
             /*
             Log.d(TAG, "Transport: "+props.getProperty("mail.transport.protocol"));
             Log.d(TAG, "Store: "+props.getProperty("mail.store.protocol"));
@@ -43,7 +48,7 @@ public class MailReader extends Authenticator{
         }
         try {
             session = Session.getDefaultInstance(props, null);
-            store = session.getStore("imaps");
+            store = session.getStore(Pref.prefMailProtocol);
             store.connect(mailhost, user, password);
             Log.i(TAG, "Store: "+store.toString());
         } catch (NoSuchProviderException e) {

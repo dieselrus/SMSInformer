@@ -39,7 +39,17 @@ public class TimePreference extends DialogPreference {
     public void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
-            final String result = this.tp.getCurrentHour() + ":" + this.tp.getCurrentMinute();
+            String h = this.tp.getCurrentHour().toString();
+            String m = this.tp.getCurrentMinute().toString();
+
+            if( h.length() == 1 )
+                h = "0" + h;
+
+            if( m.length() == 1 )
+                m = "0" + m;
+
+            final String result = h + ":" + m;
+
             setTitle(getTitle());
             setSummary(result);
             persistString(result);

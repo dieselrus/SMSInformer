@@ -59,13 +59,17 @@ public class InformerService extends IntentService {
             registerReceiver(sentReceiver, new IntentFilter(SENT_SMS_FLAG));
         }
 
+        // Если интервал проверки почны меньше или равен нулю (никогда)
+        if(Pref.prefSyncFrequency <= 0)
+            return;
+
         Bundle extras = intent.getExtras();
         long TIME = extras.getLong("utime");
 
         if(intent.getAction().equalsIgnoreCase(SET_ALARM)){
             AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
             Intent i = new Intent(this, InformerService.class);
-            long UTIME = TIME + 2 * 60 * 1000;
+            long UTIME = TIME + Pref.prefSyncFrequency * 60 * 1000;
             i.putExtra("utime", UTIME);
             i.setAction(InformerService.RUN_ALARM);
 
@@ -91,8 +95,16 @@ public class InformerService extends IntentService {
 
                 // Если получили письма, отправляем СМС
                 if(reader.readMail()){
-                    SMSSend sms = new SMSSend(this, sentPIn, deliverPIn);
-                    sms.send();
+                    // Проверяем разрешена ли отправка по временным рамкам
+                    Calendar cal = Calendar.getInstance();
+                    int currentHour = cal.get(Calendar.HOUR);
+                    int currentMinute = cal.get(Calendar.MINUTE);
+
+                    if( currentHour >= Pref.prefSendSMSHourFirst && currentMinute >= Pref.prefSendSMSMinuteFirst &&
+                            currentHour <= Pref.prefSendSMSHourLast && currentMinute <= Pref.prefSendSMSMinuteLast) {
+                        SMSSend sms = new SMSSend(this, sentPIn, deliverPIn);
+                        sms.send();
+                    }
                 }
 
                 //Log.d("SendMail", "read ok");
