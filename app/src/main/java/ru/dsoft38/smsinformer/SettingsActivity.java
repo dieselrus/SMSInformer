@@ -18,8 +18,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.widget.TimePicker;
-
 
 import java.util.List;
 
@@ -270,34 +268,11 @@ public class SettingsActivity extends PreferenceActivity {
                                          Preference preference) {
         if (preference.getKey().equals("time_sms_send_first")) {
             //new DatePickerDialog(this, this, year, monthOfYear, dayOfMonth).show();
-            ttd = new TimePickerDialog(this, myCallBack, 1, 1, true);
+            //ttd = new TimePickerDialog(this, myCallBack, 1, 1, true);
 
-            ttd.show();
+            //ttd.show();
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
-    }
-
-    TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            //myHour = hourOfDay;
-            //myMinute = minute;
-            //tvTime.setText("Time is " + myHour + " hours " + myMinute + " minutes");
-            preference.putString(key + TIME_HOURS_KEY, hour);
-            preference.putString(key + TIME_MINUTE_KEY, minute);
-            preference.commit();
-        }
-    };
-
-    public static int getHour(String time) {
-        String[] pieces=time.split(":");
-
-        return(Integer.parseInt(pieces[0]));
-    }
-
-    public static int getMinute(String time) {
-        String[] pieces=time.split(":");
-
-        return(Integer.parseInt(pieces[1]));
     }
 }
