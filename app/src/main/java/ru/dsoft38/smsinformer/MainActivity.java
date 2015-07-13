@@ -15,7 +15,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AlarmReceiver.scheduleAlarms(this);
+        //AlarmReceiver.scheduleAlarms(this);
+        Intent i = new Intent(this, ReceiveService.class);
+        this.startService(i);
     }
 
     @Override
@@ -37,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
             return true;
+        } else if(id == R.id.action_help){
+            Intent i = new Intent(this, Help.class);
+            startActivity(i);
+        } else if(id == R.id.action_about){
+            Intent i = new Intent(this, About.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);

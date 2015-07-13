@@ -12,7 +12,7 @@ import android.telephony.SmsManager;
 public class SMSSend {
     private final String LOG_TAG = "Send SMS";
 
-    private Context context;
+    private static Context context;
 
     private static PendingIntent sentPIn = null;
     private static PendingIntent deliverPIn = null;
@@ -53,6 +53,9 @@ public class SMSSend {
         if ( arrayNum == null || currentSMSNumberIndex >= arrayNum.length ) {
             currentSMSNumberIndex = 0;
             arrayNum = null;
+
+            AlarmDb db = new AlarmDb(context);
+            db.delete_SMS_DATA(SMSSend.currentID);
 
             return;
         }

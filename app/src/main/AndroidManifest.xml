@@ -40,6 +40,16 @@
             android:label="@string/title_activity_settings" >
         </activity>
 
+        <activity
+            android:name=".About"
+            android:label="@string/title_activity_about" >
+        </activity>
+
+        <activity
+            android:name=".Help"
+            android:label="@string/title_activity_help" >
+        </activity>
+
         <receiver android:name=".AlarmReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

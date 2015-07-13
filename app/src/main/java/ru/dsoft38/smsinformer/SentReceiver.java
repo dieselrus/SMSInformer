@@ -22,9 +22,6 @@ public class SentReceiver extends BroadcastReceiver {
                 SMSSend.currentSMSNumberIndex++;
                 SMSSend.sendingSMS();
 
-                AlarmDb db = new AlarmDb(context);
-                db.delete_SMS_DATA(SMSSend.currentID);
-
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF :
                 Log.d(LOG_TAG, "Телефонный модуль выключен!");

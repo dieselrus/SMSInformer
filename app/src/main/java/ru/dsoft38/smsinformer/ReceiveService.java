@@ -25,6 +25,9 @@ public class ReceiveService extends Service {
     public void onCreate() {
         Log.d(LOG_TAG, "onCreate");
 
+        // Поставил задачу
+        AlarmReceiver.scheduleAlarms(this);
+
         Intent sentIn = new Intent(SENT_SMS_FLAG);
         sentPIn = PendingIntent.getBroadcast(this, 0, sentIn, 0);
 

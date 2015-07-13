@@ -101,9 +101,10 @@ public class MailReader extends Authenticator{
                     String PhoneList = content.substring(firstPos + 11, endPos).trim();
 
 		    	    /*<GroupID> </GroupID>*/
+                    String GroupID = "1";
                     firstPos = content.indexOf("<GroupID>");
                     endPos = content.indexOf("</GroupID>");
-                    String GroupID = content.substring(firstPos + 9, endPos).trim();
+                    GroupID = content.substring(firstPos + 9, endPos).trim();
 
 		    	    /*<MessageText> </MessageText>*/
                     firstPos = content.indexOf("<MessageText>");
