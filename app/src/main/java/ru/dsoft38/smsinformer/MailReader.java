@@ -26,8 +26,10 @@ public class MailReader extends Authenticator{
 
     public MailReader(Context context, String user, String password) {
 
+        Pref.getPref(context);
+
         if(Pref.prefMailHost == "" || Pref.prefMailHost == null ||
-                Pref.prefMailAddress == "" || Pref.prefMailAddress == null ||
+                Pref.prefMailUser == "" || Pref.prefMailUser == null ||
                 Pref.prefMailProtocol == "" || Pref.prefMailProtocol == null)
             return;
 
@@ -38,13 +40,13 @@ public class MailReader extends Authenticator{
             Log.e(TAG, "Properties are null !!");
         }else{
             props.setProperty("mail.store.protocol", Pref.prefMailProtocol);
-            /*
+
             Log.d(TAG, "Transport: "+props.getProperty("mail.transport.protocol"));
             Log.d(TAG, "Store: "+props.getProperty("mail.store.protocol"));
             Log.d(TAG, "Host: "+props.getProperty("mail.imap.host"));
             Log.d(TAG, "Authentication: "+props.getProperty("mail.imap.auth"));
             Log.d(TAG, "Port: "+props.getProperty("mail.imap.port"));
-            */
+
         }
         try {
             session = Session.getDefaultInstance(props, null);
@@ -60,69 +62,70 @@ public class MailReader extends Authenticator{
 
     public synchronized boolean readMail() throws Exception {
         try {
-            Folder folder = store.getFolder("Inbox");
-            folder.open(Folder.READ_WRITE);
+            if (store.isConnected()) {
+                Folder folder = store.getFolder("Inbox");
+                folder.open(Folder.READ_WRITE);
 
-			/*
-        	Message[] msgs = folder.getMessages(1, 10);
-        	FetchProfile fp = new FetchProfile();
-        	fp.add(FetchProfile.Item.ENVELOPE);
-        	folder.fetch(msgs, fp);
-			 */
+                /*
+                Message[] msgs = folder.getMessages(1, 10);
+                FetchProfile fp = new FetchProfile();
+                fp.add(FetchProfile.Item.ENVELOPE);
+                folder.fetch(msgs, fp);
+                 */
 
-            // Все письма
-            //Message[] msgs = folder.getMessages();
+                // Все письма
+                //Message[] msgs = folder.getMessages();
 
-            //Только не прочитанные письма
-            Flags seen = new Flags(Flags.Flag.SEEN);
-            FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
-            Message msgs[] = folder.search(unseenFlagTerm);
+                //Только не прочитанные письма
+                Flags seen = new Flags(Flags.Flag.SEEN);
+                FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
+                Message msgs[] = folder.search(unseenFlagTerm);
 
-            //Получим доступ к БД
-            AlarmDb db = new AlarmDb(context);
+                //Получим доступ к БД
+                AlarmDb db = new AlarmDb(context);
 
-            //Переберем все новые письма, отберем по нужной теме и запишем данные в БД
-            for(int i = msgs.length - 1; i >= 0; i--){
-                String subject = msgs[i].getSubject().toString().trim(); //Получение темы письма
+                //Переберем все новые письма, отберем по нужной теме и запишем данные в БД
+                for (int i = msgs.length - 1; i >= 0; i--) {
+                    String subject = msgs[i].getSubject().toString().trim(); //Получение темы письма
 
-                if(!subject.equalsIgnoreCase("SMSINFORMER")){
-                    continue;
+                    if (!subject.equalsIgnoreCase(Pref.prefMailSubject)) {
+                        continue;
+                    }
+
+                    //Текст письма
+                    String content = msgs[i].getContent().toString().trim();
+
+		    	    /*<PhoneList> </PhoneList>*/
+                    int firstPos = content.indexOf("<PhoneList>");
+                    int endPos = content.indexOf("</PhoneList>");
+                    String PhoneList = content.substring(firstPos + 11, endPos).trim();
+
+		    	    /*<GroupID> </GroupID>*/
+                    firstPos = content.indexOf("<GroupID>");
+                    endPos = content.indexOf("</GroupID>");
+                    String GroupID = content.substring(firstPos + 9, endPos).trim();
+
+		    	    /*<MessageText> </MessageText>*/
+                    firstPos = content.indexOf("<MessageText>");
+                    endPos = content.indexOf("</MessageText>");
+
+                    if (endPos - (firstPos + 13) > 60) {
+                        endPos = firstPos + 13 + 59;
+                    }
+
+                    String MSG = content.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
+
+                    db.insertAlarm(PhoneList, GroupID, MSG);
+
                 }
 
-                //Текст письма
-                String content = msgs[i].getContent().toString().trim();
-
-		    	/*<PhoneList> </PhoneList>*/
-                int firstPos = content.indexOf("<PhoneList>");
-                int endPos = content.indexOf("</PhoneList>");
-                String PhoneList = content.substring(firstPos + 11, endPos).trim();
-
-		    	/*<GroupID> </GroupID>*/
-                firstPos = content.indexOf("<GroupID>");
-                endPos = content.indexOf("</GroupID>");
-                String GroupID = content.substring(firstPos + 9, endPos).trim();
-
-		    	/*<MessageText> </MessageText>*/
-                firstPos = content.indexOf("<MessageText>");
-                endPos = content.indexOf("</MessageText>");
-
-                if(endPos - (firstPos + 13) > 60){
-                    endPos = firstPos + 13 + 59;
-                }
-
-                String MSG = content.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
-
-                db.insertAlarm(PhoneList, GroupID, MSG);
-
+                // Пометим как прочитанные
+                //folder.setFlags(msgs, new Flags(Flags.Flag.SEEN), true);
+                folder.close(false);
+                store.close();
             }
-
-            // Пометим как прочитанные
-            //folder.setFlags(msgs, new Flags(Flags.Flag.SEEN), true);
-            folder.close(false);
-            store.close();
-
             return true;
-        } catch (Exception e) {
+        }catch(Exception e){
             Log.e("readMail", e.getMessage(), e);
             return false;
         }

@@ -80,10 +80,11 @@ public class SettingsActivity extends PreferenceActivity {
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
-        bindPreferenceSummaryToValue(findPreference("mail_address"));
+        bindPreferenceSummaryToValue(findPreference("mail_user"));
         bindPreferenceSummaryToValue(findPreference("mail_password"));
         bindPreferenceSummaryToValue(findPreference("mail_host"));
         bindPreferenceSummaryToValue(findPreference("mail_store_protocol"));
+        bindPreferenceSummaryToValue(findPreference("mail_subject"));
         //bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         bindPreferenceSummaryToValue(findPreference("time_sms_send_first"));

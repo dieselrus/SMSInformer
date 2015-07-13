@@ -6,10 +6,14 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class InformerService extends IntentService {
@@ -20,12 +24,12 @@ public class InformerService extends IntentService {
     public static final String SET_ALARM = "ru.dsoft38.smsinformer_SET_ALARM";
     public static final String RUN_ALARM = "ru.dsoft38.smsinformer_RUN_ALARM";
     // Флаги для отправки и доставки SMS
-    private static final String SENT_SMS_FLAG = "ru.dsoft38.smsinformer_SENT_SMS";
-    private static final String DELIVER_SMS_FLAG = "ru.dsoft38.smsinformer_DELIVER_SMS";
+    //private static final String SENT_SMS_FLAG = "ru.dsoft38.smsinformer_SENT_SMS";
+    //private static final String DELIVER_SMS_FLAG = "ru.dsoft38.smsinformer_DELIVER_SMS";
 
-    private PendingIntent sentPIn = null;
-    private PendingIntent deliverPIn = null;
-    private SentReceiver sentReceiver;
+    //private PendingIntent sentPIn = null;
+    //private PendingIntent deliverPIn = null;
+    //private static SentReceiver sentReceiver;
 
     public InformerService() {
         super("InformerService");
@@ -33,6 +37,24 @@ public class InformerService extends IntentService {
 
     public InformerService(String name) {
         super(name);
+    }
+
+    // Определяем подключены ли к интернету
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nInfo = cm.getActiveNetworkInfo();
+        if (nInfo != null && nInfo.isConnected()) {
+            if (DEBUG_LOG) {
+                Log.d(TAG_LOG, "ONLINE");
+            }
+            return true;
+        }
+        else {
+            if (DEBUG_LOG) {
+                Log.d(TAG_LOG, "OFFLINE");
+            }
+            return false;
+        }
     }
 
     public String getDateStr(Calendar c) {
@@ -47,18 +69,6 @@ public class InformerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Intent sentIn = new Intent(SENT_SMS_FLAG);
-        sentPIn = PendingIntent.getBroadcast(this, 0, sentIn, 0);
-
-        Intent deliverIn = new Intent(DELIVER_SMS_FLAG);
-        deliverPIn = PendingIntent.getBroadcast(this, 0, deliverIn, 0);
-
-        // Регистрация на оповещения об отправке и доставке СМС
-        if(sentReceiver == null) {
-            sentReceiver = new SentReceiver();
-            registerReceiver(sentReceiver, new IntentFilter(SENT_SMS_FLAG));
-        }
-
         // Если интервал проверки почны меньше или равен нулю (никогда)
         if(Pref.prefSyncFrequency <= 0)
             return;
@@ -67,6 +77,7 @@ public class InformerService extends IntentService {
         long TIME = extras.getLong("utime");
 
         if(intent.getAction().equalsIgnoreCase(SET_ALARM)){
+
             AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
             Intent i = new Intent(this, InformerService.class);
             long UTIME = TIME + Pref.prefSyncFrequency * 60 * 1000;
@@ -82,7 +93,9 @@ public class InformerService extends IntentService {
                 cal.setTimeInMillis(UTIME);
                 Log.d(TAG_LOG, "Сигнализация установлена: время = " + getDateStr(cal) + "( " + UTIME + " )");
             }
+
         } else if (intent.getAction().equalsIgnoreCase(RUN_ALARM)) { // Сигнализация сработала!
+
             if (DEBUG_LOG) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(TIME);
@@ -91,23 +104,52 @@ public class InformerService extends IntentService {
 
             try {
                 // Проверяем почту
-                MailReader reader = new MailReader(this, "gamza@cbs38.ru", "Jnrhjqcz");
+                MailReader reader = new MailReader(this, Pref.prefMailUser, Pref.prefMailPassword);
 
                 // Если получили письма, отправляем СМС
-                if(reader.readMail()){
-                    // Проверяем разрешена ли отправка по временным рамкам
-                    Calendar cal = Calendar.getInstance();
-                    int currentHour = cal.get(Calendar.HOUR);
-                    int currentMinute = cal.get(Calendar.MINUTE);
+                if(isOnline() && reader.readMail()) {
 
-                    if( currentHour >= Pref.prefSendSMSHourFirst && currentMinute >= Pref.prefSendSMSMinuteFirst &&
-                            currentHour <= Pref.prefSendSMSHourLast && currentMinute <= Pref.prefSendSMSMinuteLast) {
-                        SMSSend sms = new SMSSend(this, sentPIn, deliverPIn);
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    boolean isSplit = false;
+                    boolean isWithin = false;
+
+                    Date dt1 = null, dt2 = null, dt3 = null;
+
+                    dt1 = sdf.parse(Pref.prefSendSMSTimeFirst);
+                    dt2 = sdf.parse(Pref.prefSendSMSTimeLast);
+                    dt3 = sdf.parse(sdf.format(new Date()));
+
+                    isSplit = (dt2.compareTo(dt1) < 0);
+
+                    if (DEBUG_LOG) {
+                        Log.d(TAG_LOG, "[split]: " + isSplit);
+                    }
+
+                    if (isSplit) {
+                        isWithin = (dt3.after(dt1) || dt3.before(dt2));
+                    } else {
+                        isWithin = (dt3.after(dt1) && dt3.before(dt2));
+                    }
+
+                    if (DEBUG_LOG) {
+                        Log.d(TAG_LOG, "Is time within interval? " + isWithin);
+                    }
+
+                    if (isWithin){
+                        SMSSend sms = new SMSSend(this, ReceiveService.sentPIn, ReceiveService.deliverPIn);
                         sms.send();
+                    }
+
+                } else if (!isOnline()){
+                    if (DEBUG_LOG) {
+                        Log.d(TAG_LOG, "Не подключения к интернет.");
+                    }
+                } else if(!reader.readMail()){
+                    if (DEBUG_LOG) {
+                        Log.d(TAG_LOG, "Проблемы с чтением почты.");
                     }
                 }
 
-                //Log.d("SendMail", "read ok");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -121,9 +163,9 @@ public class InformerService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         //Log.d(LOG_TAG, "onDestroy");
-       if(sentReceiver != null) {
-           unregisterReceiver(sentReceiver);
-           sentReceiver = null;
-       }
+       //if(sentReceiver != null) {
+       //    //unregisterReceiver(sentReceiver);
+       //    sentReceiver = null;
+       //}
     }
 }

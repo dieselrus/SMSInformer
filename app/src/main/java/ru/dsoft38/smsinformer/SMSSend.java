@@ -53,6 +53,7 @@ public class SMSSend {
         if ( arrayNum == null || currentSMSNumberIndex >= arrayNum.length ) {
             currentSMSNumberIndex = 0;
             arrayNum = null;
+
             return;
         }
 
@@ -60,9 +61,9 @@ public class SMSSend {
         String num = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
 
         // Проверяем длину номера 11 символов или 12, если с +
-        //if (num.length() == 11 || (num.substring(0, 1).equals("+") && num.length() == 12)) {
+        if (num.length() == 11 || (num.substring(0, 1).equals("+") && num.length() == 12)) {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(num, null, smsText, sentPIn, deliverPIn);
-        //}
+        }
     }
 }
