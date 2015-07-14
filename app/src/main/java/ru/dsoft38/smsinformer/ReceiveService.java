@@ -45,7 +45,6 @@ public class ReceiveService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "onStartCommand");
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -58,9 +57,10 @@ public class ReceiveService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(LOG_TAG, "onDestroy");
+        //Log.d(LOG_TAG, "onDestroy");
         // отмена регистрации на оповещение отправки и доставка СМС
         unregisterReceiver(sentReceiver);
+        sentReceiver = null;
         //unregisterReceiver(deliverReceiver);
     }
 }

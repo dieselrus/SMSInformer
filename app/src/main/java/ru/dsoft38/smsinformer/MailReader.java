@@ -26,7 +26,7 @@ public class MailReader extends Authenticator{
 
     public MailReader(Context context, String user, String password) {
 
-        Pref.getPref(context);
+        //Pref.getPref(context);
 
         if(Pref.prefMailHost == "" || Pref.prefMailHost == null ||
                 Pref.prefMailUser == "" || Pref.prefMailUser == null ||
@@ -37,22 +37,22 @@ public class MailReader extends Authenticator{
 
         Properties props = System.getProperties();
         if (props == null){
-            Log.e(TAG, "Properties are null !!");
+            //Log.e(TAG, "Properties are null !!");
         }else{
             props.setProperty("mail.store.protocol", Pref.prefMailProtocol);
 
-            Log.d(TAG, "Transport: "+props.getProperty("mail.transport.protocol"));
-            Log.d(TAG, "Store: "+props.getProperty("mail.store.protocol"));
-            Log.d(TAG, "Host: "+props.getProperty("mail.imap.host"));
-            Log.d(TAG, "Authentication: "+props.getProperty("mail.imap.auth"));
-            Log.d(TAG, "Port: "+props.getProperty("mail.imap.port"));
+            //Log.d(TAG, "Transport: "+props.getProperty("mail.transport.protocol"));
+            //Log.d(TAG, "Store: "+props.getProperty("mail.store.protocol"));
+            //Log.d(TAG, "Host: "+props.getProperty("mail.imap.host"));
+            //Log.d(TAG, "Authentication: "+props.getProperty("mail.imap.auth"));
+            //Log.d(TAG, "Port: "+props.getProperty("mail.imap.port"));
 
         }
         try {
             session = Session.getDefaultInstance(props, null);
             store = session.getStore(Pref.prefMailProtocol);
             store.connect(mailhost, user, password);
-            Log.i(TAG, "Store: "+store.toString());
+            //Log.i(TAG, "Store: "+store.toString());
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
@@ -118,12 +118,25 @@ public class MailReader extends Authenticator{
 
                     db.insertAlarm(PhoneList, GroupID, MSG);
 
+                    this.context = null;
+                    content =null;
+                    PhoneList = null;
+                    GroupID = null;
+                    MSG = null;
+                    firstPos =0;
+                    endPos = 0;
+                    db = null;
+
                 }
 
+                msgs = null;
                 // Пометим как прочитанные
                 //folder.setFlags(msgs, new Flags(Flags.Flag.SEEN), true);
                 folder.close(false);
                 store.close();
+
+                folder = null;
+                store = null;
             }
             return true;
         }catch(Exception e){

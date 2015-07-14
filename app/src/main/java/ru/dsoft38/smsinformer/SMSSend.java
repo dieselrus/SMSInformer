@@ -57,6 +57,10 @@ public class SMSSend {
             AlarmDb db = new AlarmDb(context);
             db.delete_SMS_DATA(SMSSend.currentID);
 
+            context = null;
+            sentPIn = null;
+            deliverPIn = null;
+
             return;
         }
 
@@ -67,6 +71,8 @@ public class SMSSend {
         if (num.length() == 11 || (num.substring(0, 1).equals("+") && num.length() == 12)) {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(num, null, smsText, sentPIn, deliverPIn);
+            smsManager = null;
+            num = null;
         }
     }
 }

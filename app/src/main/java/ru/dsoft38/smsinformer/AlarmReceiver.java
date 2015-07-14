@@ -15,7 +15,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Pref.getPref(context);
+        //Pref.getPref(context);
         startReceiveService(context);
         scheduleAlarms(context);
     }

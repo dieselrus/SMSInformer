@@ -23,13 +23,6 @@ public class InformerService extends IntentService {
 
     public static final String SET_ALARM = "ru.dsoft38.smsinformer_SET_ALARM";
     public static final String RUN_ALARM = "ru.dsoft38.smsinformer_RUN_ALARM";
-    // Флаги для отправки и доставки SMS
-    //private static final String SENT_SMS_FLAG = "ru.dsoft38.smsinformer_SENT_SMS";
-    //private static final String DELIVER_SMS_FLAG = "ru.dsoft38.smsinformer_DELIVER_SMS";
-
-    //private PendingIntent sentPIn = null;
-    //private PendingIntent deliverPIn = null;
-    //private static SentReceiver sentReceiver;
 
     public InformerService() {
         super("InformerService");
@@ -138,6 +131,7 @@ public class InformerService extends IntentService {
                     if (isWithin){
                         SMSSend sms = new SMSSend(this, ReceiveService.sentPIn, ReceiveService.deliverPIn);
                         sms.send();
+                        sms = null;
                     }
 
                 } else if (!isOnline()){
@@ -149,6 +143,8 @@ public class InformerService extends IntentService {
                         Log.d(TAG_LOG, "Проблемы с чтением почты.");
                     }
                 }
+
+                reader = null;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -163,9 +159,5 @@ public class InformerService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         //Log.d(LOG_TAG, "onDestroy");
-       //if(sentReceiver != null) {
-       //    //unregisterReceiver(sentReceiver);
-       //    sentReceiver = null;
-       //}
     }
 }
