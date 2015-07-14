@@ -1,18 +1,20 @@
 package ru.dsoft38.smsinformer;
 
 import java.util.Enumeration;
-import java.util.Objects;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
+import javax.mail.BodyPart;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.search.FlagTerm;
+import javax.mail.Header;
 
 import android.content.Context;
 import android.util.Log;
@@ -94,20 +96,35 @@ public class MailReader extends Authenticator{
                         continue;
                     }
 
-                    //Текст письма
-                    String content = msgs[i].getContent().toString().trim();
-
                     Enumeration headers = msgs[i].getAllHeaders();
 
                     while (headers.hasMoreElements()) {
-                        Objects h = (Objects) headers.nextElement();
-                        //System.out.println(h.getName() + ": " + h.getValue());
+                        Header h = (Header) headers.nextElement();
+                        System.out.println(h.getName() + ": " + h.getValue());
                     }
+
+                    String con = null;
+
+                    if(msgs[i].getContent() instanceof Multipart){
+                        Multipart mime = (Multipart) msgs[i].getContent();
+
+                        for (int j = 0; j < mime.getCount(); j++)
+                        {
+                            BodyPart part = mime.getBodyPart(i);
+                            con += part.getContent().toString();
+                        }
+                    }
+
+                    //Текст письма
+                    String content = msgs[i].getContent().toString().trim();
 
 		    	    /*<PhoneList> </PhoneList>*/
                     int firstPos = content.indexOf("<PhoneList>");
                     int endPos = content.indexOf("</PhoneList>");
-                    String PhoneList = content.substring(firstPos + 11, endPos).trim();
+                    String PhoneList = "";
+
+                    if(content.length() > endPos)
+                        PhoneList = content.substring(firstPos + 11, endPos).trim();
 
 		    	    /*<GroupID> </GroupID>*/
                     String GroupID = "1";
@@ -123,7 +140,10 @@ public class MailReader extends Authenticator{
                         endPos = firstPos + 13 + 59;
                     }
 
-                    String MSG = content.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
+                    String MSG = "";
+
+                    if(content.length() > endPos)
+                        MSG = content.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
 
                     if(PhoneList.length() > 0 || MSG.length() > 0) {
                         db.insertAlarm(PhoneList, GroupID, MSG);
