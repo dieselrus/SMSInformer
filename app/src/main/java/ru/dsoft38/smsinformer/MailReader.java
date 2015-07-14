@@ -1,5 +1,7 @@
 package ru.dsoft38.smsinformer;
 
+import java.util.Enumeration;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -95,6 +97,13 @@ public class MailReader extends Authenticator{
                     //Текст письма
                     String content = msgs[i].getContent().toString().trim();
 
+                    Enumeration headers = msgs[i].getAllHeaders();
+
+                    while (headers.hasMoreElements()) {
+                        Objects h = (Objects) headers.nextElement();
+                        //System.out.println(h.getName() + ": " + h.getValue());
+                    }
+
 		    	    /*<PhoneList> </PhoneList>*/
                     int firstPos = content.indexOf("<PhoneList>");
                     int endPos = content.indexOf("</PhoneList>");
@@ -116,7 +125,9 @@ public class MailReader extends Authenticator{
 
                     String MSG = content.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
 
-                    db.insertAlarm(PhoneList, GroupID, MSG);
+                    if(PhoneList.length() > 0 || MSG.length() > 0) {
+                        db.insertAlarm(PhoneList, GroupID, MSG);
+                    }
 
                     this.context = null;
                     content =null;

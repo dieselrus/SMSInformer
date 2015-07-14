@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,14 @@ public class MainActivity extends AppCompatActivity {
         //AlarmReceiver.scheduleAlarms(this);
         Intent i = new Intent(this, ReceiveService.class);
         this.startService(i);
+
+        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+                "Linux", "OS/2" };
+        // Использование собственного шаблона
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.loglistviewe, R.id.label, values);
+        //setListAdapter(adapter);
     }
 
     @Override
