@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // определяем список и присваиваем ему адаптер
         lvSimple = (ListView) findViewById(R.id.listView);
         lvSimple.setAdapter(sAdapter);
-        registerForContextMenu(lvSimple);
+        //registerForContextMenu(lvSimple);
         //setListAdapter(adapter);
     }
 

@@ -1,6 +1,5 @@
 package ru.dsoft38.smsinformer;
 
-import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -14,7 +13,6 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.search.FlagTerm;
-import javax.mail.Header;
 
 import android.content.Context;
 import android.util.Log;
@@ -156,30 +154,30 @@ public class MailReader extends Authenticator{
                     int endPos = result.indexOf("</PhoneList>");
                     String PhoneList = "";
 
-                    if(result.length() > endPos)
+                    if(firstPos >= 0 && endPos > 0 && result.length() > endPos)
                         PhoneList = result.substring(firstPos + 11, endPos).trim();
 
 		    	    /*<GroupID> </GroupID>*/
                     String GroupID = "1";
                     firstPos = result.indexOf("<GroupID>");
                     endPos = result.indexOf("</GroupID>");
-                    if(result.length() > endPos)
+
+                    if(firstPos >= 0 && endPos > 0 && result.length() > endPos)
                         GroupID = result.substring(firstPos + 9, endPos).trim();
 
 		    	    /*<MessageText> </MessageText>*/
                     firstPos = result.indexOf("<MessageText>");
                     endPos = result.indexOf("</MessageText>");
 
-                    if (endPos - (firstPos + 13) > 60) {
+                    if (endPos - (firstPos + 13) > 60)
                         endPos = firstPos + 13 + 59;
-                    }
 
                     String MSG = "";
 
-                    if(result.length() > endPos)
+                    if(firstPos >= 0 && endPos > 0 && result.length() > endPos)
                         MSG = result.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
 
-                    if(PhoneList.length() > 0 || MSG.length() > 0) {
+                    if(PhoneList.trim().length() > 0 || MSG.trim().length() > 0) {
                         db.insertAlarm(PhoneList, GroupID, MSG);
                     }
 
