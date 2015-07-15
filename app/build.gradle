@@ -26,4 +26,5 @@ dependencies {
     compile files('libs/mail.jar')
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'
+    compile files('libs/jsoup-1.8.2.jar')
 }

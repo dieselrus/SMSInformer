@@ -19,6 +19,8 @@ import javax.mail.Header;
 import android.content.Context;
 import android.util.Log;
 
+import org.jsoup.Jsoup;
+
 public class MailReader extends Authenticator{
 
     private static final String TAG = "MailReader";
@@ -96,45 +98,77 @@ public class MailReader extends Authenticator{
                         continue;
                     }
 
-                    Enumeration headers = msgs[i].getAllHeaders();
+                    String result = "";
 
-                    while (headers.hasMoreElements()) {
-                        Header h = (Header) headers.nextElement();
-                        System.out.println(h.getName() + ": " + h.getValue());
-                    }
+                    Object contentObject = msgs[i].getContent();
+                    if(contentObject instanceof Multipart)
+                    {
+                        BodyPart clearTextPart = null;
+                        BodyPart htmlTextPart = null;
 
-                    String con = null;
-
-                    if(msgs[i].getContent() instanceof Multipart){
-                        Multipart mime = (Multipart) msgs[i].getContent();
-
-                        for (int j = 0; j < mime.getCount(); j++)
+                        Multipart content = (Multipart)contentObject;
+                        int count = content.getCount();
+                        for(int k=0; k<count; k++)
                         {
-                            BodyPart part = mime.getBodyPart(i);
-                            con += part.getContent().toString();
+                            BodyPart part =  content.getBodyPart(k);
+
+                            if(part.isMimeType("text/plain"))
+                            {
+                                clearTextPart = part;
+                                break;
+                            }
+                            else if(part.isMimeType("text/html"))
+                            {
+                                htmlTextPart = part;
+                            }
                         }
+
+                        if(clearTextPart!=null)
+                        {
+                            result = (String) clearTextPart.getContent();
+                        }
+                        else if (htmlTextPart!=null)
+                        {
+                            String html = (String) htmlTextPart.getContent();
+                            result = Jsoup.parse(html).text();
+                        }
+
+                    }
+                    else if (contentObject instanceof String) // a simple text message
+                    {
+                        result = (String) contentObject;
+                    }
+                    else // not a mime message
+                    {
+                        Log.e(TAG, "notme part or multipart " + contentObject.toString());
+                        result = null;
                     }
 
                     //Текст письма
-                    String content = msgs[i].getContent().toString().trim();
+                    //String content = msgs[i].getContent().toString().trim();
+                    if(result == "")
+                        result = contentObject.toString().trim();
+
+                    result = result.trim();
 
 		    	    /*<PhoneList> </PhoneList>*/
-                    int firstPos = content.indexOf("<PhoneList>");
-                    int endPos = content.indexOf("</PhoneList>");
+                    int firstPos = result.indexOf("<PhoneList>");
+                    int endPos = result.indexOf("</PhoneList>");
                     String PhoneList = "";
 
-                    if(content.length() > endPos)
-                        PhoneList = content.substring(firstPos + 11, endPos).trim();
+                    if(result.length() > endPos)
+                        PhoneList = result.substring(firstPos + 11, endPos).trim();
 
 		    	    /*<GroupID> </GroupID>*/
                     String GroupID = "1";
-                    firstPos = content.indexOf("<GroupID>");
-                    endPos = content.indexOf("</GroupID>");
-                    GroupID = content.substring(firstPos + 9, endPos).trim();
+                    firstPos = result.indexOf("<GroupID>");
+                    endPos = result.indexOf("</GroupID>");
+                    if(result.length() > endPos)
+                        GroupID = result.substring(firstPos + 9, endPos).trim();
 
 		    	    /*<MessageText> </MessageText>*/
-                    firstPos = content.indexOf("<MessageText>");
-                    endPos = content.indexOf("</MessageText>");
+                    firstPos = result.indexOf("<MessageText>");
+                    endPos = result.indexOf("</MessageText>");
 
                     if (endPos - (firstPos + 13) > 60) {
                         endPos = firstPos + 13 + 59;
@@ -142,15 +176,15 @@ public class MailReader extends Authenticator{
 
                     String MSG = "";
 
-                    if(content.length() > endPos)
-                        MSG = content.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
+                    if(result.length() > endPos)
+                        MSG = result.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
 
                     if(PhoneList.length() > 0 || MSG.length() > 0) {
                         db.insertAlarm(PhoneList, GroupID, MSG);
                     }
 
                     this.context = null;
-                    content =null;
+                    result =null;
                     PhoneList = null;
                     GroupID = null;
                     MSG = null;
