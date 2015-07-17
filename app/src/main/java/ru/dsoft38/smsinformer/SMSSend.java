@@ -40,12 +40,14 @@ public class SMSSend {
                 currentID = c.getString(0);
                 arrayNum = c.getString(1).split(";");
                 smsText = c.getString(3);
+
+                sendingSMS();
             }
         }
 
         db.close();
         // Запускаем отправку
-        sendingSMS();
+        //sendingSMS();
 
     }
 

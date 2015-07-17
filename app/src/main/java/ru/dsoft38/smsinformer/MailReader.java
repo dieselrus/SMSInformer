@@ -41,16 +41,23 @@ public class MailReader extends Authenticator{
 
         Properties props = System.getProperties();
         if (props == null){
-            //Log.e(TAG, "Properties are null !!");
+            Log.e(TAG, "Properties are null !!");
         }else{
             props.setProperty("mail.store.protocol", Pref.prefMailProtocol);
+            // set this session up to use SSL for IMAP connections
+            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            // don't fallback to normal IMAP connections on failure.
+            props.setProperty("mail.imap.socketFactory.fallback", "false");
+            // use the simap port for imap/ssl connections.
+            props.setProperty("mail.imap.socketFactory.port", String.valueOf(Pref.prefMailPort));
 
-            //Log.d(TAG, "Transport: "+props.getProperty("mail.transport.protocol"));
-            //Log.d(TAG, "Store: "+props.getProperty("mail.store.protocol"));
-            //Log.d(TAG, "Host: "+props.getProperty("mail.imap.host"));
-            //Log.d(TAG, "Authentication: "+props.getProperty("mail.imap.auth"));
-            //Log.d(TAG, "Port: "+props.getProperty("mail.imap.port"));
-
+            /*
+            Log.d(TAG, "Transport: "+props.getProperty("mail.transport.protocol"));
+            Log.d(TAG, "Store: "+props.getProperty("mail.store.protocol"));
+            Log.d(TAG, "Host: "+props.getProperty("mail.imap.host"));
+            Log.d(TAG, "Authentication: "+props.getProperty("mail.imap.auth"));
+            Log.d(TAG, "Port: "+props.getProperty("mail.imap.port"));
+            */
         }
         try {
             session = Session.getDefaultInstance(props, null);
@@ -188,10 +195,9 @@ public class MailReader extends Authenticator{
                     MSG = null;
                     firstPos =0;
                     endPos = 0;
-                    db = null;
-
                 }
 
+                db = null;
                 msgs = null;
                 // Пометим как прочитанные
                 //folder.setFlags(msgs, new Flags(Flags.Flag.SEEN), true);

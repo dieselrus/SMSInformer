@@ -84,11 +84,13 @@ public class SettingsActivity extends PreferenceActivity {
         bindPreferenceSummaryToValue(findPreference("mail_password"));
         bindPreferenceSummaryToValue(findPreference("mail_host"));
         bindPreferenceSummaryToValue(findPreference("mail_store_protocol"));
+        bindPreferenceSummaryToValue(findPreference("mail_port"));
         bindPreferenceSummaryToValue(findPreference("mail_subject"));
         //bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         bindPreferenceSummaryToValue(findPreference("time_sms_send_first"));
         bindPreferenceSummaryToValue(findPreference("time_sms_send_last"));
+
     }
 
     /**

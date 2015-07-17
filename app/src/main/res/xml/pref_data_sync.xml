@@ -22,4 +22,10 @@
         android:title="@string/pref_title_time_sms_send_last"
         android:defaultValue="@string/pref_default_time_sms_send_last" />
 
+    <CheckBoxPreference
+        android:key="enable_reader_time"
+        android:title="@string/pref_title_enable_read_mail_time"
+        android:summary="@string/pref_summary_enable_read_mail_time">
+    </CheckBoxPreference>
+
 </PreferenceScreen>

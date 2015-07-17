@@ -13,6 +13,9 @@
     <string name="pref_title_mail_host">Сервер получения почты</string>
     <string name="pref_default_mail_host">imap.host.com</string>
 
+    <string name="pref_title_mail_port">Порт</string>
+    <string name="pref_default_mail_port">993</string>
+
     <string name="pref_title_mail_store_protocol">Протокол получения почты</string>
     <string-array name="pref_mail_store_protocol_list_titles">
         <item>imaps</item>
@@ -53,5 +56,7 @@
     <string name="pref_default_time_sms_send_first">09:00</string>
     <string name="pref_title_time_sms_send_last">Отправлять СМС до</string>
     <string name="pref_default_time_sms_send_last">20:00</string>
+    <string name="pref_title_enable_read_mail_time">Ограничить время получения почты</string>
+    <string name="pref_summary_enable_read_mail_time">Проверять почту в этот же промежуток времени</string>
 
 </resources>

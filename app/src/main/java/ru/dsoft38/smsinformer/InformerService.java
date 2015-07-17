@@ -96,52 +96,65 @@ public class InformerService extends IntentService {
             }
 
             try {
-                // Проверяем почту
-                MailReader reader = new MailReader(this, Pref.prefMailUser, Pref.prefMailPassword);
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                boolean isSplit = false;
+                boolean isWithin = false;
 
-                // Если получили письма, отправляем СМС
-                if(isOnline() && reader.readMail()) {
+                Date dt1 = null, dt2 = null, dt3 = null;
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                    boolean isSplit = false;
-                    boolean isWithin = false;
+                dt1 = sdf.parse(Pref.prefSendSMSTimeFirst);
+                dt2 = sdf.parse(Pref.prefSendSMSTimeLast);
+                dt3 = sdf.parse(sdf.format(new Date()));
 
-                    Date dt1 = null, dt2 = null, dt3 = null;
+                isSplit = (dt2.compareTo(dt1) < 0);
 
-                    dt1 = sdf.parse(Pref.prefSendSMSTimeFirst);
-                    dt2 = sdf.parse(Pref.prefSendSMSTimeLast);
-                    dt3 = sdf.parse(sdf.format(new Date()));
+                if (DEBUG_LOG) {
+                    Log.d(TAG_LOG, "[split]: " + isSplit);
+                }
 
-                    isSplit = (dt2.compareTo(dt1) < 0);
+                if (isSplit) {
+                    isWithin = (dt3.after(dt1) || dt3.before(dt2));
+                } else {
+                    isWithin = (dt3.after(dt1) && dt3.before(dt2));
+                }
 
-                    if (DEBUG_LOG) {
-                        Log.d(TAG_LOG, "[split]: " + isSplit);
+                if (DEBUG_LOG) {
+                    Log.d(TAG_LOG, "Is time within interval? " + isWithin);
+                }
+
+                MailReader reader;
+                boolean bMailReed = false;
+
+                // Если не ограничивать получение почты по времени
+                if(isOnline() && !Pref.prefEnableReadMailTime){
+                    reader = new MailReader(this, Pref.prefMailUser, Pref.prefMailPassword);
+                    bMailReed = reader.readMail();
+                }
+
+                if (isWithin) {
+                    // Проверяем почту
+                    if(isOnline() && Pref.prefEnableReadMailTime && isWithin){
+                        reader = new MailReader(this, Pref.prefMailUser, Pref.prefMailPassword);
+                        bMailReed = reader.readMail();
                     }
 
-                    if (isSplit) {
-                        isWithin = (dt3.after(dt1) || dt3.before(dt2));
-                    } else {
-                        isWithin = (dt3.after(dt1) && dt3.before(dt2));
-                    }
+                    // Если получили письма, отправляем СМС
+                    if (isOnline() && bMailReed) {
 
-                    if (DEBUG_LOG) {
-                        Log.d(TAG_LOG, "Is time within interval? " + isWithin);
-                    }
-
-                    if (isWithin){
                         SMSSend sms = new SMSSend(this, ReceiveService.sentPIn, ReceiveService.deliverPIn);
                         sms.send();
                         sms = null;
+
+                    } else if (!isOnline()) {
+                        if (DEBUG_LOG) {
+                            Log.d(TAG_LOG, "Нет подключения к интернет.");
+                        }
+                    } else if (!bMailReed) {
+                        if (DEBUG_LOG) {
+                            Log.d(TAG_LOG, "Проблемы с чтением почты.");
+                        }
                     }
 
-                } else if (!isOnline()){
-                    if (DEBUG_LOG) {
-                        Log.d(TAG_LOG, "Не подключения к интернет.");
-                    }
-                } else if(!reader.readMail()){
-                    if (DEBUG_LOG) {
-                        Log.d(TAG_LOG, "Проблемы с чтением почты.");
-                    }
                 }
 
                 reader = null;
