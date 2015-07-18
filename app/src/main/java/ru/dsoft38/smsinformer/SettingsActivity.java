@@ -72,10 +72,10 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.pref_data_sync);
 
         // Add 'data and sync' preferences, and a corresponding header.
-        //fakeHeader = new PreferenceCategory(this);
-        //fakeHeader.setTitle(R.string.pref_header_notifications);
-        //getPreferenceScreen().addPreference(fakeHeader);
-        //addPreferencesFromResource(R.xml.pref_notification);
+        fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_sms);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_sms);
 
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated

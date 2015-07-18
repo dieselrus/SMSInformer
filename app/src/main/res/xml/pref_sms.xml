@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="enable_cut_sms_text"
+        android:title="@string/pref_title_enable_cut_sms_text"
+        android:summary="@string/pref_summary_enable_cut_sms_text">
+    </CheckBoxPreference>
+
+    <EditTextPreference
+        android:key="max_sms_count_in_one_mail"
+        android:title="@string/pref_title_max_sms_count_in_one_mail"
+        android:defaultValue="@string/pref_default_max_sms_count_in_one_mail"
+        android:summary="@string/pref_summary_max_sms_in_one_mail"
+        android:selectAllOnFocus="true"
+        android:inputType="number"
+        android:singleLine="true"
+        android:maxLines="1" />
+</PreferenceScreen>

@@ -8,4 +8,7 @@
     <header android:fragment="ru.dsoft38.smsinformer.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
+    <header android:fragment="ru.dsoft38.smsinformer.SettingsActivity$DataSyncPreferenceFragment"
+        android:title="@string/pref_header_sms" />
+
 </preference-headers>

@@ -45,7 +45,9 @@ public class MailReader extends Authenticator{
         }else{
             props.setProperty("mail.store.protocol", Pref.prefMailProtocol);
             // set this session up to use SSL for IMAP connections
-            props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            if(Pref.prefMailEnableSSL) {
+                props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            }
             // don't fallback to normal IMAP connections on failure.
             props.setProperty("mail.imap.socketFactory.fallback", "false");
             // use the simap port for imap/ssl connections.
@@ -176,13 +178,24 @@ public class MailReader extends Authenticator{
                     firstPos = result.indexOf("<MessageText>");
                     endPos = result.indexOf("</MessageText>");
 
-                    if (endPos - (firstPos + 13) > 60)
-                        endPos = firstPos + 13 + 59;
+                    // Определим максимальное количество символов в одном СМС на основе языка
+                    int maxLen = 60;
+                    if(Pref.prefSMSTextCut){
+                        if(isCyrillic(result.substring(firstPos, endPos).trim())){
+                            maxLen = 60;
+                        } else {
+                            maxLen = 160;
+                        }
+                    }
+                    // Если длина сообщения больше 60 или 160 символов и установлен флаг обрезки текста, обрезаем текст
+                    if (endPos - (firstPos + 13) > maxLen && Pref.prefSMSTextCut) {
+                        endPos = firstPos + 13 + maxLen;
+                    }
 
                     String MSG = "";
 
                     if(firstPos >= 0 && endPos > 0 && result.length() > endPos)
-                        MSG = result.substring(firstPos + 13, endPos).trim(); // СМС 60 символов
+                        MSG = result.substring(firstPos + 13, endPos).trim();
 
                     if(PhoneList.trim().length() > 0 || MSG.trim().length() > 0) {
                         db.insertAlarm(PhoneList, GroupID, MSG);
@@ -212,6 +225,24 @@ public class MailReader extends Authenticator{
             Log.e("readMail", e.getMessage(), e);
             return false;
         }
+    }
+
+    /** Определение языка (Кирилица или нет)
+     *
+     * @param _str - текст
+     * @return да/нет
+     */
+    boolean isCyrillic(String _str){
+        for(int i = 0; i < _str.length(); i++){
+            //String hexCode = Integer.toHexString(_str.codePointAt(i)).toUpperCase();
+            int hexCode = _str.codePointAt(i);
+            //Log.d("Data", String.valueOf(hexCode));
+
+            if(hexCode > 1040 && hexCode < 1103){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

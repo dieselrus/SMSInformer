@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.telephony.SmsManager;
 
+import java.util.ArrayList;
+
 /**
  * Created by diesel on 10.07.2015.
  */
@@ -67,14 +69,44 @@ public class SMSSend {
         }
 
         // Удаляем не нужные символы
-        String num = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
+        String phone = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
 
         // Проверяем длину номера 11 символов или 12, если с +
-        if (num.length() != 0 && (num.length() == 11 || (num.substring(0, 1).equals("+") && num.length() == 12))) {
+        if (phone.length() != 0 && (phone.length() == 11 || (phone.substring(0, 1).equals("+") && phone.length() == 12))) {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(num, null, smsText, sentPIn, deliverPIn);
+
+            //smsManager.sendTextMessage(phone, null, smsText, sentPIn, deliverPIn);
+
+
+            ArrayList<String> al_message = new ArrayList<String>();
+            al_message = smsManager.divideMessage(smsText);
+
+            ArrayList<PendingIntent> al_piSent = new ArrayList<PendingIntent>();
+            ArrayList<PendingIntent> al_piDelivered = new ArrayList<PendingIntent>();
+
+            for (int i = 0; i < al_message.size(); i++)
+            {
+                Intent sentIntent = new Intent("SMS_SENT");
+                //sentIntent.putExtra("PARTS", "Часть: "+i);
+                //sentIntent.putExtra("MSG", "Сообщение: "+al_message.get(i));
+                PendingIntent pi_sent = PendingIntent.getBroadcast(context, i, sentIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                al_piSent.add(sentPIn);
+
+                Intent deliveredIntent = new Intent("SMS_DELIVERED");
+                //deliveredIntent.putExtra("PARTS", "Часть: "+i);
+                //deliveredIntent.putExtra("MSG", "Сообщение: "+al_message.get(i));
+                //PendingIntent pi_delivered = PendingIntent.getBroadcast(this, i, deliveredIntent,
+                //        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                al_piDelivered.add(deliverPIn);
+            }
+
+            smsManager.sendMultipartTextMessage(phone, null, al_message, al_piSent, al_piDelivered);
+
             smsManager = null;
-            num = null;
+            phone = null;
         } else {
             //AlarmDb db = new AlarmDb(context);
             //db.delete_SMS_DATA(SMSSend.currentID);

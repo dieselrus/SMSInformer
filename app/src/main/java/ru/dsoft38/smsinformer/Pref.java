@@ -20,6 +20,10 @@ public class Pref {
     public static String prefSendSMSTimeFirst       = "09:00";
     public static String prefSendSMSTimeLast        = "20:00";
     public static boolean prefEnableReadMailTime    = true;
+    public static boolean prefMailEnableSSL         = true;
+
+    public static boolean prefSMSTextCut    = true;
+    public static int prefMaxSMSCount       = 3;
 
     //private Context context;
 
@@ -34,7 +38,8 @@ public class Pref {
         prefMailUser        = pref.getString("mail_user", "");
         prefMailPassword    = pref.getString("mail_password", "");
         prefMailSubject     = pref.getString("mail_subject", "SMSINFORMER");
-        prefMailPort        = pref.getInt("mail_port", 993);
+        prefMailPort        = Integer.parseInt(pref.getString("mail_port", "993"));
+        prefMailEnableSSL   = pref.getBoolean("mail_enable_ssl", true);
 
         if(Integer.parseInt(pref.getString("mail_store_protocol", "0")) == 0) {
             prefMailProtocol = "imaps";
@@ -47,6 +52,9 @@ public class Pref {
         prefSendSMSTimeFirst    = pref.getString("time_sms_send_first", "09:00");
         prefSendSMSTimeLast     = pref.getString("time_sms_send_last", "20:00");
         prefEnableReadMailTime  = pref.getBoolean("enable_reader_time", true);
+
+        prefSMSTextCut  = pref.getBoolean("enable_cut_sms_text", true);
+        prefMaxSMSCount = Integer.parseInt(pref.getString("max_sms_count_in_one_mail", "993"));
 
     }
 

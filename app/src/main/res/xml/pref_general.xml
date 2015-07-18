@@ -49,6 +49,11 @@
         android:singleLine="true"
         android:maxLines="1" />
 
+    <CheckBoxPreference
+        android:key="mail_enable_ssl"
+        android:title="@string/pref_title_mail_ssl">
+    </CheckBoxPreference>
+
     <EditTextPreference
         android:key="mail_subject"
         android:title="@string/pref_title_mail_subject"
