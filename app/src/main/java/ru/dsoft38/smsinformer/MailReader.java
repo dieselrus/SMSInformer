@@ -47,6 +47,7 @@ public class MailReader extends Authenticator{
             // set this session up to use SSL for IMAP connections
             if(Pref.prefMailEnableSSL) {
                 props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                //props.put("mail.smtp.socketFactory.port", Pref.prefMailProtocol);
             }
             // don't fallback to normal IMAP connections on failure.
             props.setProperty("mail.imap.socketFactory.fallback", "false");
@@ -223,6 +224,7 @@ public class MailReader extends Authenticator{
             return true;
         }catch(Exception e){
             Log.e("readMail", e.getMessage(), e);
+            e.printStackTrace();
             return false;
         }
     }
