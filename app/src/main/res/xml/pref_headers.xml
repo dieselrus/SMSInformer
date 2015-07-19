@@ -5,6 +5,9 @@
     <header android:fragment="ru.dsoft38.smsinformer.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
+    <header android:fragment="ru.dsoft38.smsinformer.SettingsActivity$GeneralPreferenceFragment"
+        android:title="@string/pref_header_general" />
+
     <header android:fragment="ru.dsoft38.smsinformer.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 

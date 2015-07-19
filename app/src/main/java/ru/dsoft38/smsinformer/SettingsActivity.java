@@ -67,6 +67,12 @@ public class SettingsActivity extends PreferenceActivity {
 
         // Add 'notifications' preferences, and a corresponding header.
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_mail);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_email);
+
+        // Add 'data and sync' preferences, and a corresponding header.
+        fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_data_sync);
         getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_data_sync);
@@ -80,6 +86,7 @@ public class SettingsActivity extends PreferenceActivity {
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
+        bindPreferenceSummaryToValue(findPreference("log_row"));
         bindPreferenceSummaryToValue(findPreference("mail_user"));
         bindPreferenceSummaryToValue(findPreference("mail_password"));
         bindPreferenceSummaryToValue(findPreference("mail_host"));

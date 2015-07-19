@@ -22,7 +22,7 @@ public class SentReceiver extends BroadcastReceiver {
             case Activity.RESULT_OK:
                 Log.d(LOG_TAG, "Сообщение отправлено!");
 
-                db.insertLog(this.toString(), "Сообщение отправлено!");
+                db.insertLog("Сообщение отправлено!");
                 db = null;
 
                 SMSSend.currentSMSNumberIndex++;
@@ -32,7 +32,7 @@ public class SentReceiver extends BroadcastReceiver {
             case SmsManager.RESULT_ERROR_RADIO_OFF :
                 Log.d(LOG_TAG, "Телефонный модуль выключен!");
 
-                db.insertLog(this.toString(), "Телефонный модуль выключен!");
+                db.insertLog("Телефонный модуль выключен!");
                 db = null;
 
                 //sendingSMS();
@@ -40,7 +40,7 @@ public class SentReceiver extends BroadcastReceiver {
             case SmsManager.RESULT_ERROR_NULL_PDU :
                 Log.d(LOG_TAG, "Возникла проблема, связанная с форматом PDU (protocol description unit)!");
 
-                db.insertLog(this.toString(), "Возникла проблема, связанная с форматом PDU (protocol description unit)!");
+                db.insertLog("Возникла проблема, связанная с форматом PDU (protocol description unit)!");
                 db = null;
 
                 //sendingSMS();
@@ -48,7 +48,7 @@ public class SentReceiver extends BroadcastReceiver {
             case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                 Log.d(LOG_TAG, "При отправке возникли неизвестные проблемы!");
 
-                db.insertLog(this.toString(), "При отправке возникли неизвестные проблемы!");
+                db.insertLog("При отправке возникли неизвестные проблемы!");
                 db = null;
 
                 //sendingSMS();
@@ -57,7 +57,7 @@ public class SentReceiver extends BroadcastReceiver {
                 // sent SMS message failed
                 Log.d(LOG_TAG, "Сообщение не отправлено!");
 
-                db.insertLog(this.toString(), "Сообщение не отправлено по непонятным причинам!");
+                db.insertLog("Сообщение не отправлено по непонятным причинам!");
                 db = null;
 
                 //sendingSMS();

@@ -1,8 +1,13 @@
 <resources>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="pref_header_general">Основные</string>
+
+    <string name="pref_title_log_row">Строк на странице в журнале логов</string>
+    <string name="pref_default_log_row">25</string>
+
     <!-- Example settings for Email -->
-    <string name="pref_header_general">Почтовый ящик</string>
+    <string name="pref_header_mail">Электронная почта</string>
 
     <string name="pref_title_mail_user">Логин</string>
     <string name="pref_default_mail_user">email@host.com</string>

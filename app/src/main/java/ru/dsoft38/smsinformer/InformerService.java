@@ -89,7 +89,7 @@ public class InformerService extends IntentService {
 
             Calendar cal = Calendar.getInstance();
             AlarmDb db = new AlarmDb(this);
-            db.insertLog(this.toString(), "Задача установлена на " + getDateStr(cal) + " ( " + UTIME + " )");
+            db.insertLog("Задача установлена на " + getDateStr(cal));
             db = null;
 
         } else if (intent.getAction().equalsIgnoreCase(RUN_ALARM)) { // Сигнализация сработала!
@@ -102,7 +102,7 @@ public class InformerService extends IntentService {
 
             Calendar cal = Calendar.getInstance();
             AlarmDb db = new AlarmDb(this);
-            db.insertLog(this.toString(), "Старт задачи " + getDateStr(cal) + "( " + TIME + " )");
+            db.insertLog("Старт задачи " + getDateStr(cal));
             db = null;
 
             try {
@@ -161,14 +161,14 @@ public class InformerService extends IntentService {
                         }
 
                         db = new AlarmDb(this);
-                        db.insertLog(this.toString(), "Нет подключения к интернет.");
+                        db.insertLog("Нет подключения к интернет.");
                         db = null;
                     } else if (!bMailReed) {
                         if (DEBUG_LOG) {
                             Log.d(TAG_LOG, "Проблемы с чтением почты.");
                         }
                         db = new AlarmDb(this);
-                        db.insertLog(this.toString(), "Проблемы с чтением почты.");
+                        db.insertLog("Проблемы с чтением почты.");
                         db = null;
                     }
 

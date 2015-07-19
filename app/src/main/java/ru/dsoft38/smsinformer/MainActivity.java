@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.text.Format;
@@ -18,11 +20,23 @@ public class MainActivity extends AppCompatActivity {
     private ListView lvSimple = null;
     private ArrayList log_time = null;
     private ArrayList log_text = null;
+    private ImageButton btnReloadLog = null;
+    private ImageButton btnBackLog = null;
+    private ImageButton btnForwardLog = null;
+
+    private int iLimit = 20;
+    private int iOffset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Pref.getPref(this);
+        iLimit = Pref.prefLogRow;
+
+        log_time = new ArrayList();
+        log_text = new ArrayList();
 
         //AlarmReceiver.scheduleAlarms(this);
         Intent i = new Intent(this, ReceiveService.class);
@@ -31,31 +45,65 @@ public class MainActivity extends AppCompatActivity {
         // Использование собственного шаблона
         lvSimple = (ListView) findViewById(R.id.listView);
 
-        log_time = new ArrayList();
-        log_text = new ArrayList();
+        getLog(String.valueOf(iLimit), String.valueOf(iOffset));
 
-        getLog();
+        //lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
 
-        lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
+        btnReloadLog = (ImageButton) findViewById(R.id.btnReloadLog);
+        btnBackLog = (ImageButton) findViewById(R.id.btnBack);
+        btnForwardLog = (ImageButton) findViewById(R.id.btnForward);
 
+        btnReloadLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                log_time = new ArrayList();
+                log_text = new ArrayList();
+
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+            }
+        });
+
+        btnBackLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                log_time = new ArrayList();
+                log_text = new ArrayList();
+
+                iOffset -= iLimit;
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+            }
+        });
+
+        btnForwardLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                log_time = new ArrayList();
+                log_text = new ArrayList();
+
+                iOffset += iLimit;
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+            }
+        });
     }
 
-    private void getLog() {
+    private void getLog(String limit, String offset) {
         AlarmDb db = new AlarmDb(this);
         db.open();
-        Cursor c = db.select_LOG();
+        Cursor c = db.select_LOG(limit, offset);
 
         if (c != null) while (c.moveToNext()) {
 
             long l = Long.parseLong(c.getString(1));
 
-            Format formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            Format formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
             log_time.add(formatter.format(new Date(l)));
-            log_text.add(c.getString(3));
+            log_text.add(c.getString(2));
         }
 
         db.close();
+
+        lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
     }
 
     @Override

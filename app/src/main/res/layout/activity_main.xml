@@ -8,25 +8,45 @@
     <TextView android:text="string/hello_world" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/btnForward"
+        android:layout_toRightOf="@+id/btnBack"
+        android:layout_toLeftOf="@+id/btnForward"
+        android:layout_toStartOf="@+id/btnForward"
+        android:id="@+id/tvLogTitle" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnReloadLog"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:src="@mipmap/refresh" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_below="@+id/btnReloadLog"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
+        android:id="@+id/btnForward"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toLeftOf="@+id/btnReloadLog"
+        android:layout_toStartOf="@+id/btnReloadLog"
+        android:src="@mipmap/forward" />
 
-    <ListView
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:layout_below="@+id/imageButton"
+        android:id="@+id/btnBack"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:src="@mipmap/back" />
 
 </RelativeLayout>

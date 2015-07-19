@@ -25,6 +25,8 @@ public class Pref {
     public static boolean prefSMSTextCut    = true;
     public static int prefMaxSMSCount       = 3;
 
+    public static int prefLogRow = 20;
+
     //private Context context;
 
     public Pref(Context context){
@@ -55,6 +57,8 @@ public class Pref {
 
         prefSMSTextCut  = pref.getBoolean("enable_cut_sms_text", true);
         prefMaxSMSCount = Integer.parseInt(pref.getString("max_sms_count_in_one_mail", "993"));
+
+        prefMaxSMSCount = Integer.parseInt(pref.getString("log_row", "20"));
 
     }
 

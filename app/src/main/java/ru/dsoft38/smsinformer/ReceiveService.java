@@ -23,7 +23,7 @@ public class ReceiveService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(LOG_TAG, "onCreate");
+        //Log.d(LOG_TAG, "onCreate");
 
         // Поставил задачу
         AlarmReceiver.scheduleAlarms(this);
@@ -44,13 +44,12 @@ public class ReceiveService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(LOG_TAG, "onStartCommand");
+        //Log.d(LOG_TAG, "onStartCommand");
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

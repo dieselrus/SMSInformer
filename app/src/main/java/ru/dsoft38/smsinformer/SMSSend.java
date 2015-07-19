@@ -104,7 +104,7 @@ public class SMSSend {
             }
 
             AlarmDb db = new AlarmDb(context);
-            db.insertLog(context.toString(), "Отправляется СМС на номер: " + phone + " с текстом: " + al_message + " )");
+            db.insertLog("Отправляется СМС на номер: " + phone + " с текстом: " + al_message + " )");
             db = null;
 
             smsManager.sendMultipartTextMessage(phone, null, al_message, al_piSent, al_piDelivered);
