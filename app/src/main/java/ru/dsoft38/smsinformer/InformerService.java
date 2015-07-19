@@ -84,16 +84,26 @@ public class InformerService extends IntentService {
             if (DEBUG_LOG) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(UTIME);
-                Log.d(TAG_LOG, "Сигнализация установлена: время = " + getDateStr(cal) + "( " + UTIME + " )");
+                Log.d(TAG_LOG, "Задача установлена на " + getDateStr(cal) + " ( " + UTIME + " )");
             }
+
+            Calendar cal = Calendar.getInstance();
+            AlarmDb db = new AlarmDb(this);
+            db.insertLog(this.toString(), "Задача установлена на " + getDateStr(cal) + " ( " + UTIME + " )");
+            db = null;
 
         } else if (intent.getAction().equalsIgnoreCase(RUN_ALARM)) { // Сигнализация сработала!
 
             if (DEBUG_LOG) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(TIME);
-                Log.d(TAG_LOG, "Аларм! время = " + getDateStr(cal) + "( " + TIME + " )");
+                Log.d(TAG_LOG, "Старт задачи " + getDateStr(cal) + "( " + TIME + " )");
             }
+
+            Calendar cal = Calendar.getInstance();
+            AlarmDb db = new AlarmDb(this);
+            db.insertLog(this.toString(), "Старт задачи " + getDateStr(cal) + "( " + TIME + " )");
+            db = null;
 
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -149,10 +159,17 @@ public class InformerService extends IntentService {
                         if (DEBUG_LOG) {
                             Log.d(TAG_LOG, "Нет подключения к интернет.");
                         }
+
+                        db = new AlarmDb(this);
+                        db.insertLog(this.toString(), "Нет подключения к интернет.");
+                        db = null;
                     } else if (!bMailReed) {
                         if (DEBUG_LOG) {
                             Log.d(TAG_LOG, "Проблемы с чтением почты.");
                         }
+                        db = new AlarmDb(this);
+                        db.insertLog(this.toString(), "Проблемы с чтением почты.");
+                        db = null;
                     }
 
                 }

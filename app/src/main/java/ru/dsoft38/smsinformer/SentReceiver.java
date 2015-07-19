@@ -15,9 +15,15 @@ public class SentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        AlarmDb db = new AlarmDb(context);
+
         switch (getResultCode()) {
+
             case Activity.RESULT_OK:
                 Log.d(LOG_TAG, "Сообщение отправлено!");
+
+                db.insertLog(this.toString(), "Сообщение отправлено!");
+                db = null;
 
                 SMSSend.currentSMSNumberIndex++;
                 SMSSend.sendingSMS();
@@ -25,21 +31,39 @@ public class SentReceiver extends BroadcastReceiver {
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF :
                 Log.d(LOG_TAG, "Телефонный модуль выключен!");
+
+                db.insertLog(this.toString(), "Телефонный модуль выключен!");
+                db = null;
+
                 //sendingSMS();
                 break;
             case SmsManager.RESULT_ERROR_NULL_PDU :
                 Log.d(LOG_TAG, "Возникла проблема, связанная с форматом PDU (protocol description unit)!");
+
+                db.insertLog(this.toString(), "Возникла проблема, связанная с форматом PDU (protocol description unit)!");
+                db = null;
+
                 //sendingSMS();
                 break;
             case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                 Log.d(LOG_TAG, "При отправке возникли неизвестные проблемы!");
+
+                db.insertLog(this.toString(), "При отправке возникли неизвестные проблемы!");
+                db = null;
+
                 //sendingSMS();
                 break;
             default:
                 // sent SMS message failed
                 Log.d(LOG_TAG, "Сообщение не отправлено!");
-                //sendSMS();
+
+                db.insertLog(this.toString(), "Сообщение не отправлено по непонятным причинам!");
+                db = null;
+
+                //sendingSMS();
                 break;
         }
+
+        db = null;
     }
 }

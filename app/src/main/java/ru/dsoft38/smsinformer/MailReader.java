@@ -17,6 +17,9 @@ import javax.mail.search.FlagTerm;
 import android.content.Context;
 import android.util.Log;
 
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPStore;
+
 import org.jsoup.Jsoup;
 
 public class MailReader extends Authenticator{
@@ -63,6 +66,7 @@ public class MailReader extends Authenticator{
             */
         }
         try {
+            //session.setDebug(true);
             session = Session.getDefaultInstance(props, null);
             store = session.getStore(Pref.prefMailProtocol);
             store.connect(mailhost, user, password);
@@ -109,6 +113,8 @@ public class MailReader extends Authenticator{
                     String result = "";
 
                     Object contentObject = msgs[i].getContent();
+                    //Multipart contentObject = (Multipart) msgs[i].getContent();
+
                     if(contentObject instanceof Multipart)
                     {
                         BodyPart clearTextPart = null;

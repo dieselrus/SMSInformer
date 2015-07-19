@@ -1,24 +1,23 @@
 package ru.dsoft38.smsinformer;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Map;
-
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView lvSimple = null;
-    private SimpleAdapter sAdapter = null;
-    private ArrayList<Map<String, String>> data = null;
-    private Map<String, String> m = null;
+    private ArrayList log_time = null;
+    private ArrayList log_text = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,16 +28,34 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, ReceiveService.class);
         this.startService(i);
 
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2" };
         // Использование собственного шаблона
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.loglistviewe, R.id.label, values);
-        // определяем список и присваиваем ему адаптер
         lvSimple = (ListView) findViewById(R.id.listView);
-        lvSimple.setAdapter(sAdapter);
-        //registerForContextMenu(lvSimple);
-        //setListAdapter(adapter);
+
+        log_time = new ArrayList();
+        log_text = new ArrayList();
+
+        getLog();
+
+        lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
+
+    }
+
+    private void getLog() {
+        AlarmDb db = new AlarmDb(this);
+        db.open();
+        Cursor c = db.select_LOG();
+
+        if (c != null) while (c.moveToNext()) {
+
+            long l = Long.parseLong(c.getString(1));
+
+            Format formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+
+            log_time.add(formatter.format(new Date(l)));
+            log_text.add(c.getString(3));
+        }
+
+        db.close();
     }
 
     @Override
