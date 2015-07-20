@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SMS Informer</string>
+    <string name="app_name">SMS информатор</string>
 
     <string name="title_activity_about">О программе</string>
     <string name="title_activity_help">Помощь</string>
@@ -7,5 +7,5 @@
     <string name="action_about">О программе</string>
     <string name="action_help">Помощь</string>
     <string name="action_settings">Настройки</string>
-    <string name="log">Журнал логов</string>
+    <string name="log">Журнал</string>
 </resources>

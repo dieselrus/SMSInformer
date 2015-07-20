@@ -3,7 +3,7 @@
 
     <string name="pref_header_general">Основные</string>
 
-    <string name="pref_title_log_row">Строк на странице в журнале логов</string>
+    <string name="pref_title_log_row">Количество строк на странице в журнале</string>
     <string name="pref_default_log_row">25</string>
 
     <!-- Example settings for Email -->
