@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class InformerService extends IntentService {
 
-    static boolean DEBUG_LOG = true;
+    static boolean DEBUG_LOG = false;
     private static final String TAG_LOG = "SMSInformer";
 
     public static final String SET_ALARM = "ru.dsoft38.smsinformer_SET_ALARM";
