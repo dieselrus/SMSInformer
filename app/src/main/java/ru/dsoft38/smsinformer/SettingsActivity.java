@@ -88,7 +88,7 @@ public class SettingsActivity extends PreferenceActivity {
         // to reflect the new value, per the Android Design guidelines.
         bindPreferenceSummaryToValue(findPreference("log_row"));
         bindPreferenceSummaryToValue(findPreference("mail_user"));
-        bindPreferenceSummaryToValue(findPreference("mail_password"));
+        //bindPreferenceSummaryToValue(findPreference("mail_password"));
         bindPreferenceSummaryToValue(findPreference("mail_host"));
         bindPreferenceSummaryToValue(findPreference("mail_store_protocol"));
         bindPreferenceSummaryToValue(findPreference("mail_port"));
