@@ -1,12 +1,27 @@
 package ru.dsoft38.smsinformer;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.android.vending.billing.IInAppBillingService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import ru.dsoft38.smsinformer.util.IabHelper;
 import ru.dsoft38.smsinformer.util.IabResult;
@@ -18,206 +33,137 @@ import ru.dsoft38.smsinformer.util.Purchase;
  */
 public class InAppBillingActivity extends Activity {
     // id вашей покупки из админки в Google Play
-    static final String SKU_ADS_DISABLE = "license_for_one_month";
+    static final String inappid = "com.example.buttonclick";
 
-    // public key из админки Google Play
     public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7QGiMiAHNPx59pir0bKmJeGB3DQ2BVL3emDFyUZAB9lwnZTMNdsxlmpRR3PhH+VL/zDL0x6bvsk1Ec8m+L26VxNASBF10yKcpbHpYPIqDSQplq46VZrijVVrxuRS/GT+q1WFCRMdth4hIoMIZ4CdoJvkWfhP5TmBGTLqjSrCmrEIuYfNaZKHhAQ5BamC8aiTMQ5kkv/PG6j6UPmb1c0A7SIAHje7Lc3LFy5bOoDhmRV4LfDyRMORyncs69YTL8P2EuJdnrXMWU+QAmiUumTqbfkEw3RaTK5RPDBHqs1gD99pKtVkmZ9Tj/HRfkYFrFJS8lWJP5fC6qt7alM+y2qwEwIDAQAB";
-    private static final String TAG = "purchasefordisablingadvertising";
-    // (arbitrary) request code for the purchase flow
-    static final int RC_REQUEST = 10001;
-    IabHelper mHelper;
 
-    RelativeLayout layout;
+    IInAppBillingService mService;
+    ServiceConnection mServiceConn;
+    IabHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.license_buy);
 
-        // грузим настройки
-        //PreferencesHelper.loadSettings(this);
+        mHelper = new IabHelper(this, BASE64_PUBLIC_KEY);
 
-        layout = new RelativeLayout(this);
-        Button btn = new Button(this);
-        //btn.setText(getResources().getString(R.string.disable_ads));
-        btn.setText("Buy");
+        mServiceConn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                mService = IInAppBillingService.Stub.asInterface(service);
+            }
 
-        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mService = null;
+            }
+        };
+
+        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+
+        Button purchaseBtn = (Button) findViewById(R.id.btnBuy);
+        purchaseBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //if (!PreferencesHelper.isAdsDisabled())
-                buy();
-            }
-        });
-        layout.addView(btn);
-        //context = this;
+                ArrayList skuList = new ArrayList();
+                skuList.add(inappid);
+                Bundle querySkus = new Bundle();
+                querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+                Bundle skuDetails;
+                try {
+                    Log.d("myLogs", getPackageName());
+                    skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
 
-        // инициализация билинга
-        billingInit();
-        //ads = new AdMobController(this, layout);
-        setContentView(layout);
+                    int response = skuDetails.getInt("RESPONSE_CODE");
+                    Log.d("myLogs", response + "");
+                    if (response == 0) {
 
-        // если отключили рекламу, то не будем показывать
-        //ads.show(!PreferencesHelper.isAdsDisabled());
-    }
+                        ArrayList<String> responseList = skuDetails
+                                .getStringArrayList("DETAILS_LIST");
 
-    private void buy() {
-        //if (!PreferencesHelper.isAdsDisabled()) {
-			/*
-			 * для безопасности сгенерьте payload для верификации. В данном
-			 * примере просто пустая строка юзается. Но в реальном приложение
-			 * подходить к этому шагу с умом.
-			 */
-            String payload = "";
-            mHelper.launchPurchaseFlow(this, SKU_ADS_DISABLE, RC_REQUEST,
-                    mPurchaseFinishedListener, payload);
-        //}
-    }
-
-    private void billingInit() {
-        mHelper = new IabHelper(this, BASE64_PUBLIC_KEY);
-
-        // включаем дебагинг (в релизной версии ОБЯЗАТЕЛЬНО выставьте в false)
-        mHelper.enableDebugLogging(true);
-
-        // инициализируем; запрос асинхронен
-        // будет вызван, когда инициализация завершится
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    return;
+                        for (String thisResponse : responseList) {
+                            JSONObject object = new JSONObject(thisResponse);
+                            String sku = object.getString("productId");
+                            String price = object.getString("price");
+                            if (sku.equals(inappid)) {
+                                System.out.println("price " + price);
+                                Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
+                                        "inapp",
+                                                "");
+                                PendingIntent pendingIntent = buyIntentBundle
+                                        .getParcelable("BUY_INTENT");
+                                startIntentSenderForResult(
+                                        pendingIntent.getIntentSender(), 1001,
+                                        new Intent(), Integer.valueOf(0),
+                                        Integer.valueOf(0), Integer.valueOf(0));
+                            }
+                        }
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
                 }
 
-                // чекаем уже купленное
-                mHelper.queryInventoryAsync(mGotInventoryListener);
             }
         });
     }
-
-    // Слушатель для востановителя покупок.
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-        private static final String TAG = "QueryInventoryFinishedListener";
-
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) {
-            Log.d(TAG, "Query inventory finished.");
-            if (result.isFailure()) {
-                Log.d(TAG, "Failed to query inventory: " + result);
-                return;
-            }
-
-            Log.d(TAG, "Query inventory was successful.");
-
-			/*
-			 * Проверяются покупки. Обратите внимание, что надо проверить каждую
-			 * покупку, чтобы убедиться, что всё норм! см.
-			 * verifyDeveloperPayload().
-			 */
-
-            /*
-            Purchase purchase = inventory.getPurchase(SKU_ADS_DISABLE);
-            PreferencesHelper.savePurchase(context,
-                    PreferencesHelper.Purchase.DISABLE_ADS, purchase != null
-                            && verifyDeveloperPayload(purchase));
-            ads.show(!PreferencesHelper.isAdsDisabled());
-            */
-        }
-    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1001) {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
 
-        // Pass on the activity result to the helper for handling
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            // not handled, so handle it ourselves (here's where you'd
-            // perform any handling of activity results not related to in-app
-            // billing...
-            super.onActivityResult(requestCode, resultCode, data);
-        } else {
-            Log.d(TAG, "onActivityResult handled by IABUtil.");
+            if (resultCode == RESULT_OK) {
+                try {
+                    JSONObject jo = new JSONObject(purchaseData);
+                    String sku = jo.getString(inappid);
+                    Toast.makeText(
+                            InAppBillingActivity.this,
+                            "You have bought the " + sku
+                                    + ". Excellent choice,adventurer!",
+                            Toast.LENGTH_LONG).show();
+
+                } catch (JSONException e) {
+                    System.out.println("Failed to parse purchase data.");
+                    e.printStackTrace();
+                }
+            }
         }
     }
-
-    /** Verifies the developer payload of a purchase. */
-    boolean verifyDeveloperPayload(Purchase p) {
-        String payload = p.getDeveloperPayload();
-		/*
-		 * TODO: здесь необходимо свою верификацию реализовать Хорошо бы ещё с
-		 * использованием собственного стороннего сервера.
-		 */
-
-        return true;
-    }
-
-    // Прокает, когда покупка завершена
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            Log.d(TAG, "Purchase finished: " + result + ", purchase: "
-                    + purchase);
-            if (result.isFailure()) {
-                return;
-            }
-            if (!verifyDeveloperPayload(purchase)) {
-                return;
-            }
-
-            Log.d(TAG, "Purchase successful.");
-
-            if (purchase.getSku().equals(SKU_ADS_DISABLE)) {
-
-                /*
-                LOG.d(TAG, "Purchase for disabling ads done. Congratulating user.");
-                Toast.makeText(getApplicationContext(), "Purchase for disabling ads done.", Toast.LENGTH_SHORT);
-                // сохраняем в настройках, что отключили рекламу
-                PreferencesHelper.savePurchase(context, PreferencesHelper.Purchase.DISABLE_ADS, true);
-                // отключаем рекламу
-                ads.show(!PreferencesHelper.isAdsDisabled());
-                */
-            }
-
-        }
-    };
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //if (ads != null)
-        //    ads.onDestroy();
 
-        if (mHelper != null)
-            mHelper.dispose();
-        mHelper = null;
-
+        if (mServiceConn != null) {
+            unbindService(mServiceConn);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //if (ads != null)
-        //    ads.onResume();
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        //if (ads != null)
-        //    ads.onStart();
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //if (ads != null)
-        //    ads.onStop();
-
     }
 }
