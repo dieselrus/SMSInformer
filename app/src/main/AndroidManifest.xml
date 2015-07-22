@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -50,6 +51,11 @@
             android:name=".Help"
             android:label="@string/title_activity_help" >
         </activity>
+
+        <activity
+            android:name=".InAppBillingActivity"
+            android:label="@string/title_activity_activation" >
+        </activity>InAppBillingActivity
 
         <receiver android:name=".AlarmReceiver" >
             <intent-filter>
