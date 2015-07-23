@@ -9,11 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btnReloadLog = null;
     private ImageButton btnBackLog = null;
     private ImageButton btnForwardLog = null;
+
+    private TextView tvLogDate = null;
+    String beginDay = "";
 
     private int iLimit = 20;
     private int iOffset = 0;
@@ -48,7 +54,20 @@ public class MainActivity extends AppCompatActivity {
         // Использование собственного шаблона
         lvSimple = (ListView) findViewById(R.id.listView);
 
-        getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+        tvLogDate = (TextView) findViewById(R.id.tvLogDate);
+
+        GregorianCalendar gc=new GregorianCalendar();
+        gc.set(GregorianCalendar.HOUR_OF_DAY, 0);
+        gc.set(GregorianCalendar.MINUTE, 0);
+        gc.set(GregorianCalendar.SECOND, 0);
+        gc.set(GregorianCalendar.MILLISECOND, 0);
+
+        Format formatter = new SimpleDateFormat("dd.MM.yyyy");
+        tvLogDate.setText(formatter.format(new Date(gc.getTimeInMillis())));
+
+        beginDay = String.valueOf(gc.getTimeInMillis());
+
+        getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
 
         //lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
 
@@ -62,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 log_time = new ArrayList();
                 log_text = new ArrayList();
 
-                getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
             }
         });
 
@@ -73,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 log_text = new ArrayList();
 
                 iOffset -= iLimit;
-                getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
             }
         });
 
@@ -84,29 +103,35 @@ public class MainActivity extends AppCompatActivity {
                 log_text = new ArrayList();
 
                 iOffset += iLimit;
-                getLog(String.valueOf(iLimit), String.valueOf(iOffset));
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
             }
         });
     }
 
-    private void getLog(String limit, String offset) {
-        AlarmDb db = new AlarmDb(this);
-        db.open();
-        Cursor c = db.select_LOG(limit, offset);
+    private void getLog(String limit, String offset, String date) {
+        try {
+            AlarmDb db = new AlarmDb(this);
+            db.open();
+            Cursor c = db.select_LOG(limit, offset, date);
 
-        if (c != null) while (c.moveToNext()) {
+            if (c != null) while (c.moveToNext()) {
 
-            long l = Long.parseLong(c.getString(1));
+                long l = Long.parseLong(c.getString(1));
 
-            Format formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                Format formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-            log_time.add(formatter.format(new Date(l)));
-            log_text.add(c.getString(2));
+                log_time.add(formatter.format(new Date(l)));
+                log_text.add(c.getString(2));
+            }
+
+            db.close();
+
+            if(log_text.size() > 0 && log_time.size() > 0)
+                lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
-        db.close();
-
-        lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
     }
 
     @Override

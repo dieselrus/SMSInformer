@@ -73,8 +73,14 @@ public class MailReader extends Authenticator{
             //Log.i(TAG, "Store: "+store.toString());
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
+            AlarmDb db = new AlarmDb(context);
+            db.insertLog(e.getMessage().toString());
+            db = null;
         } catch (MessagingException e) {
             e.printStackTrace();
+            AlarmDb db = new AlarmDb(context);
+            db.insertLog(e.getMessage().toString());
+            db = null;
         }
     }
 

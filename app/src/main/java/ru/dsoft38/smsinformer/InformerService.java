@@ -88,6 +88,7 @@ public class InformerService extends IntentService {
             }
 
             Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(UTIME);
             AlarmDb db = new AlarmDb(this);
             db.insertLog("Задача установлена на " + getDateStr(cal));
             db = null;

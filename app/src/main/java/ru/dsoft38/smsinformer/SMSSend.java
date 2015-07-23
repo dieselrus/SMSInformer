@@ -72,12 +72,16 @@ public class SMSSend {
         String phone = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
 
         // Проверяем длину номера 11 символов или 12, если с +
-        //if (phone.length() != 0 && (phone.length() == 11 || (phone.substring(0, 1).equals("+") && phone.length() == 12))) {
+        if (phone.length() != 0 && (phone.length() == 11 || (phone.substring(0, 1).equals("+") && phone.length() == 12))) {
             SmsManager smsManager = SmsManager.getDefault();
 
-            //smsManager.sendTextMessage(phone, null, smsText, sentPIn, deliverPIn);
+            AlarmDb db = new AlarmDb(context);
+            db.insertLog("Отправляется СМС на номер: " + phone + " с текстом: " + smsText + " )");
+            db = null;
 
+            smsManager.sendTextMessage(phone, null, smsText, sentPIn, deliverPIn);
 
+/*
             ArrayList<String> al_message = new ArrayList<String>();
             al_message = smsManager.divideMessage(smsText);
 
@@ -108,15 +112,15 @@ public class SMSSend {
             db = null;
 
             smsManager.sendMultipartTextMessage(phone, null, al_message, al_piSent, al_piDelivered);
-
+*/
             smsManager = null;
             phone = null;
-        //} else {
+        } else {
             //AlarmDb db = new AlarmDb(context);
             //db.delete_SMS_DATA(SMSSend.currentID);
             //db = null;
-        //    currentSMSNumberIndex++;
-        //    SMSSend.sendingSMS();
-        //}
+            currentSMSNumberIndex++;
+            SMSSend.sendingSMS();
+        }
     }
 }
