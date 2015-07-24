@@ -46,6 +46,7 @@ public class SMSSend {
                 smsText = c.getString(3);
 
                 sendingSMS();
+                break;
             }
         }
 

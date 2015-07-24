@@ -64,7 +64,7 @@ public class AlarmDb {
         //    close();
     }
 
-    public Cursor select_LOG(String limit, String offset, String date) {
+    public static Cursor select_LOG(String limit, String offset, String date) {
         return database.rawQuery("SELECT _id, datetime, text FROM tbLog " + " WHERE datetime > " + date + " LIMIT " + limit + " OFFSET " + offset, null);
         //return database.rawQuery("SELECT _id, datetime, text FROM tbLog ORDER BY datetime DESC LIMIT 100", null);
         //return database.rawQuery("SELECT _id, datetime, module, text FROM tbLog LIMIT 200", null);

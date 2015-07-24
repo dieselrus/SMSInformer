@@ -27,6 +27,7 @@ public class SentReceiver extends BroadcastReceiver {
 
                 //SMSSend.currentSMSNumberIndex++;
                 //SMSSend.sendingSMS();
+                AlarmDb.delete_SMS_DATA(SMSSend.currentID);
                 SMSSend.send();
 
                 break;

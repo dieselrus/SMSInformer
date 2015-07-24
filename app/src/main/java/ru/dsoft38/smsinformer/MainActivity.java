@@ -65,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
         Format formatter = new SimpleDateFormat("dd.MM.yyyy");
         tvLogDate.setText(formatter.format(new Date(gc.getTimeInMillis())));
 
+        tvLogDate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         beginDay = String.valueOf(gc.getTimeInMillis());
 
         getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
@@ -110,9 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getLog(String limit, String offset, String date) {
         try {
-            AlarmDb db = new AlarmDb(this);
-            db.open();
-            Cursor c = db.select_LOG(limit, offset, date);
+            Cursor c = AlarmDb.select_LOG(limit, offset, date);
 
             if (c != null) while (c.moveToNext()) {
 
@@ -123,8 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 log_time.add(formatter.format(new Date(l)));
                 log_text.add(c.getString(2));
             }
-
-            db.close();
 
             if(log_text.size() > 0 && log_time.size() > 0)
                 lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
