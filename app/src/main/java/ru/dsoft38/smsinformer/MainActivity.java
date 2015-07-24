@@ -1,5 +1,8 @@
 package ru.dsoft38.smsinformer;
 
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,9 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvLogDate = null;
     String beginDay = "";
+    String endDay = "";
 
     private int iLimit = 20;
     private int iOffset = 0;
+
+    private int DIALOG_DATE = 1;
+    private GregorianCalendar gc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         tvLogDate = (TextView) findViewById(R.id.tvLogDate);
 
-        GregorianCalendar gc=new GregorianCalendar();
+        gc = new GregorianCalendar();
         gc.set(GregorianCalendar.HOUR_OF_DAY, 0);
         gc.set(GregorianCalendar.MINUTE, 0);
         gc.set(GregorianCalendar.SECOND, 0);
@@ -65,16 +73,17 @@ public class MainActivity extends AppCompatActivity {
         Format formatter = new SimpleDateFormat("dd.MM.yyyy");
         tvLogDate.setText(formatter.format(new Date(gc.getTimeInMillis())));
 
-        tvLogDate.setOnClickListener(new View.OnClickListener(){
+        tvLogDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showDialog(DIALOG_DATE);
             }
         });
 
         beginDay = String.valueOf(gc.getTimeInMillis());
+        endDay = String.valueOf(gc.getTimeInMillis() + 86399000);
 
-        getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
+        getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay, endDay);
 
         //lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
 
@@ -88,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 log_time = new ArrayList();
                 log_text = new ArrayList();
 
-                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay, endDay);
             }
         });
 
@@ -99,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 log_text = new ArrayList();
 
                 iOffset -= iLimit;
-                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), null, null);
             }
         });
 
@@ -110,14 +119,50 @@ public class MainActivity extends AppCompatActivity {
                 log_text = new ArrayList();
 
                 iOffset += iLimit;
-                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay);
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), null, null);
             }
         });
+
     }
 
-    private void getLog(String limit, String offset, String date) {
+    //==================== set log date dialog ===============================
+    protected Dialog onCreateDialog(int id) {
+        if (id == DIALOG_DATE) {
+            DatePickerDialog tpd = new DatePickerDialog(this, myCallBack, gc.get(Calendar.YEAR), gc.get(Calendar.MONTH), gc.get(Calendar.DAY_OF_MONTH));
+            return tpd;
+        }
+        return super.onCreateDialog(id);
+    }
+
+    OnDateSetListener myCallBack = new OnDateSetListener() {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            gc.set(GregorianCalendar.YEAR, year);
+            gc.set(GregorianCalendar.MONTH, monthOfYear);
+            gc.set(GregorianCalendar.DAY_OF_MONTH, dayOfMonth);
+            gc.set(GregorianCalendar.HOUR_OF_DAY, 0);
+            gc.set(GregorianCalendar.MINUTE, 0);
+            gc.set(GregorianCalendar.SECOND, 0);
+            gc.set(GregorianCalendar.MILLISECOND, 0);
+
+            Format formatter = new SimpleDateFormat("dd.MM.yyyy");
+            tvLogDate.setText(formatter.format(new Date(gc.getTimeInMillis())));
+
+            beginDay = String.valueOf(gc.getTimeInMillis());
+        }
+    };
+
+    /*
+
+     */
+    private void getLog(String limit, String offset, String dateStart, String dateEnd) {
         try {
-            Cursor c = AlarmDb.select_LOG(limit, offset, date);
+            Cursor c;
+
+            if(dateStart == null | dateEnd == null) {
+                c = AlarmDb.select_LOG(limit, offset);
+            } else {
+                c = AlarmDb.select_LOG_DATE(limit, offset, dateStart, dateEnd);
+            }
 
             if (c != null) while (c.moveToNext()) {
 
