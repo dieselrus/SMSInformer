@@ -89,8 +89,8 @@ public class InformerService extends IntentService {
 
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(UTIME);
-            AlarmDb db = new AlarmDb(this);
-            db.insertLog("Задача установлена на " + getDateStr(cal));
+            //AlarmDb db = new AlarmDb(this);
+            AlarmDb.insertLog("Задача установлена на " + getDateStr(cal));
             db = null;
 
         } else if (intent.getAction().equalsIgnoreCase(RUN_ALARM)) { // Сигнализация сработала!
@@ -102,7 +102,7 @@ public class InformerService extends IntentService {
             }
 
             Calendar cal = Calendar.getInstance();
-            AlarmDb db = new AlarmDb(this);
+            //AlarmDb db = new AlarmDb(this);
             db.insertLog("Старт задачи " + getDateStr(cal));
             db = null;
 

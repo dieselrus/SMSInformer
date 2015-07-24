@@ -25,6 +25,9 @@ public class ReceiveService extends Service {
     public void onCreate() {
         //Log.d(LOG_TAG, "onCreate");
 
+        new AlarmDb(this);
+        AlarmDb.open();
+
         // Поставил задачу
         AlarmReceiver.scheduleAlarms(this);
 
@@ -60,6 +63,7 @@ public class ReceiveService extends Service {
         // отмена регистрации на оповещение отправки и доставка СМС
         unregisterReceiver(sentReceiver);
         sentReceiver = null;
+        AlarmDb.close();
         //unregisterReceiver(deliverReceiver);
     }
 }

@@ -27,6 +27,8 @@ public class Pref {
 
     public static int prefLogRow = 20;
 
+    public static boolean prefIsFULL = false;
+
     //private Context context;
 
     public Pref(Context context){
@@ -49,7 +51,6 @@ public class Pref {
             prefMailProtocol = "pop3";
         }
 
-
         prefSyncFrequency       = Integer.parseInt(pref.getString("sync_frequency", "-1"));
         prefSendSMSTimeFirst    = pref.getString("time_sms_send_first", "09:00");
         prefSendSMSTimeLast     = pref.getString("time_sms_send_last", "20:00");
@@ -60,6 +61,15 @@ public class Pref {
 
         prefMaxSMSCount = Integer.parseInt(pref.getString("log_row", "20"));
 
+        prefIsFULL = pref.getBoolean("is_full", false);
+
+    }
+
+    public void savePurchase( Context context, String name, boolean v){
+        /*SharedPreferences settings = context.getSharedPreferences();
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(name, v);
+        editor.commit();*/
     }
 
 }

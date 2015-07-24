@@ -13,8 +13,8 @@ import java.util.Calendar;
 public class AlarmDb {
 
     private static final int DATABASE_VERSION = 1;
-    private SQLiteDatabase database;
-    private DatabaseOpenHelper databaseOpenHelper;
+    private static SQLiteDatabase database;
+    private static DatabaseOpenHelper databaseOpenHelper;
 
     private static final String TB_SEND_SMS = "tbSendSms";
     private static final String TB_LOG = "tbLog";
@@ -23,7 +23,7 @@ public class AlarmDb {
     private static final String SQL_CREATE_TB_LOG = "CREATE TABLE " + TB_LOG +
             " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, datetime TEXT, text TEXT );";
 
-    public void insertAlarm(String NUMBER, String GROUPID, String MSG) {
+    public static void insertAlarm(String NUMBER, String GROUPID, String MSG) {
         ContentValues data = new ContentValues();
         data.put("phones", NUMBER);
         data.put("groupid", GROUPID);
@@ -41,23 +41,25 @@ public class AlarmDb {
 
     public boolean delete_SMS_DATA(String _id){
 
-        open();
+        //open();
         database.delete(TB_SEND_SMS, "_id = " + _id, null);
-        close();
+        //close();
 
         return false;
     }
 
-    public void insertLog(String text) {
+    public static void insertLog(String text) {
         long NOW = Calendar.getInstance().getTimeInMillis();
 
         ContentValues data = new ContentValues();
         data.put("datetime", String.valueOf(NOW));
         data.put("text", text);
 
-        open();
+        //if(!database.isOpen())
+        //    open();
         database.insert(TB_LOG, null, data);
-        close();
+        //if(database.isOpen())
+        //    close();
     }
 
     public Cursor select_LOG(String limit, String offset, String date) {
@@ -68,9 +70,9 @@ public class AlarmDb {
 
     public boolean delete_old_log(String _id){
 
-        open();
+        //open();
         database.delete(TB_LOG, "_id = " + _id, null);
-        close();
+        //close();
 
         return false;
     }
@@ -80,11 +82,11 @@ public class AlarmDb {
         databaseOpenHelper = new DatabaseOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public void open() throws SQLException {
-        database = databaseOpenHelper.getWritableDatabase();
+    public static void open() throws SQLException {
+            database = databaseOpenHelper.getWritableDatabase();
     }
 
-    public void close() {
+    public static void close() {
         if (database != null) database.close();
     }
 

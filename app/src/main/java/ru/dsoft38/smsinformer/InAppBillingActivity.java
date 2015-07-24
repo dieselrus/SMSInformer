@@ -10,7 +10,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,14 +20,12 @@ import com.android.vending.billing.IInAppBillingService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 
 import ru.dsoft38.smsinformer.util.IabHelper;
 import ru.dsoft38.smsinformer.util.IabResult;
 import ru.dsoft38.smsinformer.util.Inventory;
 import ru.dsoft38.smsinformer.util.Purchase;
-import ru.dsoft38.smsinformer.util.Security;
 
 /**
  * Created by diesel on 22.07.2015.
@@ -99,7 +96,7 @@ public class InAppBillingActivity extends Activity {
                                 System.out.println("price " + price);
                                 Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
                                         "inapp",
-                                                "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
+                                                "NiNt36FV@FWk3IsONV~bXqLicoIdmfY$pLt~jah8Lno~");
                                 PendingIntent pendingIntent = buyIntentBundle
                                         .getParcelable("BUY_INTENT");
                                 startIntentSenderForResult(

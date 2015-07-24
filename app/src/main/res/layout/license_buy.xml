@@ -9,11 +9,4 @@
         android:layout_height="wrap_content"
         android:text="купить" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="clickButton"
-        android:id="@+id/clickButton"
-        android:layout_gravity="center_horizontal" />
-
 </LinearLayout>
