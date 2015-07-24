@@ -15,41 +15,41 @@ public class SentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AlarmDb db = new AlarmDb(context);
+        //AlarmDb db = new AlarmDb(context);
 
         switch (getResultCode()) {
 
             case Activity.RESULT_OK:
                 Log.d(LOG_TAG, "Сообщение отправлено!");
 
-                db.insertLog("Сообщение отправлено!");
-                db = null;
+                AlarmDb.insertLog("Сообщение отправлено!");
+                //db = null;
 
-                SMSSend.currentSMSNumberIndex++;
+                //SMSSend.currentSMSNumberIndex++;
                 SMSSend.sendingSMS();
 
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF :
                 Log.d(LOG_TAG, "Телефонный модуль выключен!");
 
-                db.insertLog("Телефонный модуль выключен!");
-                db = null;
+                AlarmDb.insertLog("Телефонный модуль выключен!");
+                //db = null;
 
                 //sendingSMS();
                 break;
             case SmsManager.RESULT_ERROR_NULL_PDU :
                 Log.d(LOG_TAG, "Возникла проблема, связанная с форматом PDU (protocol description unit)!");
 
-                db.insertLog("Возникла проблема, связанная с форматом PDU (protocol description unit)!");
-                db = null;
+                AlarmDb.insertLog("Возникла проблема, связанная с форматом PDU (protocol description unit)!");
+                //db = null;
 
                 //sendingSMS();
                 break;
             case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                 Log.d(LOG_TAG, "При отправке возникли неизвестные проблемы!");
 
-                db.insertLog("При отправке возникли неизвестные проблемы!");
-                db = null;
+                AlarmDb.insertLog("При отправке возникли неизвестные проблемы!");
+                //db = null;
 
                 //sendingSMS();
                 break;
@@ -57,13 +57,13 @@ public class SentReceiver extends BroadcastReceiver {
                 // sent SMS message failed
                 Log.d(LOG_TAG, "Сообщение не отправлено!");
 
-                db.insertLog("Сообщение не отправлено по непонятным причинам!");
-                db = null;
+                AlarmDb.insertLog("Сообщение не отправлено по непонятным причинам!");
+                //db = null;
 
                 //sendingSMS();
                 break;
         }
 
-        db = null;
+        //db = null;
     }
 }

@@ -29,19 +29,21 @@ public class AlarmDb {
         data.put("groupid", GROUPID);
         data.put("msg", MSG);
 
-        open();
+        if(!database.isOpen())
+            open();
         database.insert(TB_SEND_SMS, null, data);
-        close();
+        //close();
     }
 
-    public Cursor select_SMS_DATA() {
+    public static Cursor select_SMS_DATA() {
         //return database.rawQuery("SELECT _id, phones, groupid, msg FROM tbSendSMS LIMIT 1", null);
         return database.rawQuery("SELECT _id, phones, groupid, msg FROM tbSendSMS", null);
     }
 
-    public boolean delete_SMS_DATA(String _id){
+    public static boolean delete_SMS_DATA(String _id){
 
-        //open();
+        if(!database.isOpen())
+            open();
         database.delete(TB_SEND_SMS, "_id = " + _id, null);
         //close();
 
@@ -55,8 +57,8 @@ public class AlarmDb {
         data.put("datetime", String.valueOf(NOW));
         data.put("text", text);
 
-        //if(!database.isOpen())
-        //    open();
+        if(!database.isOpen())
+            open();
         database.insert(TB_LOG, null, data);
         //if(database.isOpen())
         //    close();
@@ -70,7 +72,8 @@ public class AlarmDb {
 
     public boolean delete_old_log(String _id){
 
-        //open();
+        if(!database.isOpen())
+            open();
         database.delete(TB_LOG, "_id = " + _id, null);
         //close();
 

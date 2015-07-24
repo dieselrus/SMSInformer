@@ -32,9 +32,9 @@ public class SMSSend {
     }
 
     public void send(){
-        AlarmDb db = new AlarmDb(context);
-        db.open();
-        Cursor c = db.select_SMS_DATA();
+        // db = new AlarmDb(context);
+        //db.open();
+        Cursor c = AlarmDb.select_SMS_DATA();
 
 
         if (c != null) {
@@ -47,23 +47,23 @@ public class SMSSend {
             }
         }
 
-        db.close();
+        //db.close();
         // Запускаем отправку
         //sendingSMS();
 
     }
 
     public static void sendingSMS(){
-        if ( arrayNum == null || currentSMSNumberIndex >= arrayNum.length ) {
+        if ( arrayNum != null && currentSMSNumberIndex >= arrayNum.length ) {
             currentSMSNumberIndex = 0;
             arrayNum = null;
 
-            AlarmDb db = new AlarmDb(context);
-            db.delete_SMS_DATA(SMSSend.currentID);
+            //AlarmDb db = new AlarmDb(context);
+            AlarmDb.delete_SMS_DATA(SMSSend.currentID);
 
-            context = null;
-            sentPIn = null;
-            deliverPIn = null;
+            //context = null;
+            //sentPIn = null;
+            //deliverPIn = null;
 
             return;
         }
@@ -75,9 +75,9 @@ public class SMSSend {
         if (phone.length() != 0 && (phone.length() == 11 || (phone.substring(0, 1).equals("+") && phone.length() == 12))) {
             SmsManager smsManager = SmsManager.getDefault();
 
-            AlarmDb db = new AlarmDb(context);
-            db.insertLog("Отправляется СМС на номер: " + phone + " с текстом: " + smsText + " )");
-            db = null;
+            //AlarmDb db = new AlarmDb(context);
+            AlarmDb.insertLog("Отправляется СМС на номер: " + phone + " с текстом: " + smsText + " )");
+            //db = null;
 
             smsManager.sendTextMessage(phone, null, smsText, sentPIn, deliverPIn);
 
@@ -113,11 +113,12 @@ public class SMSSend {
 
             smsManager.sendMultipartTextMessage(phone, null, al_message, al_piSent, al_piDelivered);
 */
+            //currentSMSNumberIndex++;
             smsManager = null;
             phone = null;
         } else {
             //AlarmDb db = new AlarmDb(context);
-            //db.delete_SMS_DATA(SMSSend.currentID);
+            //AlarmDb.delete_SMS_DATA(SMSSend.currentID);
             //db = null;
             currentSMSNumberIndex++;
             SMSSend.sendingSMS();
