@@ -22,6 +22,7 @@ public class SMSSend {
     public static int currentSMSNumberIndex = 0;
     private static String[] arrayNum = null;
     private static String smsText = null;
+    private static String phoneNum = null;
     public static String currentID = null;
 
     public SMSSend(Context context, PendingIntent sentPIn, PendingIntent deliverPIn) {
@@ -40,10 +41,13 @@ public class SMSSend {
         if (c != null) {
             while (c.moveToNext()) {
                 currentID = c.getString(0);
-                arrayNum = c.getString(1).split(";");
+                //arrayNum = c.getString(1).split(";");
+                phoneNum  = c.getString(1);
                 smsText = c.getString(3);
 
                 sendingSMS();
+
+                Pref.isSending = false;
             }
         }
 
@@ -54,6 +58,17 @@ public class SMSSend {
     }
 
     public static void sendingSMS(){
+
+        if(!Pref.isSending){
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            AlarmDb.delete_SMS_DATA(SMSSend.currentID);
+            sendingSMS();
+        }
+        /*
         if ( arrayNum != null && currentSMSNumberIndex >= arrayNum.length ) {
             currentSMSNumberIndex = 0;
             arrayNum = null;
@@ -67,9 +82,10 @@ public class SMSSend {
 
             return;
         }
-
+        */
         // Удаляем не нужные символы
-        String phone = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
+        //String phone = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
+        String phone = phoneNum.replace("-", "").replace(";", "").replace(" ", "").trim();
 
         // Проверяем длину номера 11 символов или 12, если с +
         if (phone.length() != 0 && (phone.length() == 11 || (phone.substring(0, 1).equals("+") && phone.length() == 12))) {
@@ -120,8 +136,8 @@ public class SMSSend {
             //AlarmDb db = new AlarmDb(context);
             //AlarmDb.delete_SMS_DATA(SMSSend.currentID);
             //db = null;
-            currentSMSNumberIndex++;
-            SMSSend.sendingSMS();
+            //currentSMSNumberIndex++;
+            //SMSSend.sendingSMS();
         }
     }
 }

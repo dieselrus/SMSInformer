@@ -28,6 +28,7 @@ public class Pref {
     public static int prefLogRow = 20;
 
     public static boolean prefIsFULL = false;
+    public static boolean isSending = true;
 
     //private Context context;
 
@@ -62,6 +63,7 @@ public class Pref {
         prefMaxSMSCount = Integer.parseInt(pref.getString("log_row", "20"));
 
         prefIsFULL = pref.getBoolean("is_full", false);
+
 
     }
 

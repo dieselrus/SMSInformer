@@ -211,7 +211,11 @@ public class MailReader extends Authenticator{
                         MSG = result.substring(firstPos + 13, endPos).trim();
 
                     if(PhoneList.trim().length() > 0 || MSG.trim().length() > 0) {
-                        db.insertAlarm(PhoneList, GroupID, MSG);
+                        String[] arrNum = PhoneList.split(";");
+
+                        for(int h = 0; h < arrNum.length; h++) {
+                            db.insertAlarm(arrNum[h], GroupID, MSG);
+                        }
                     }
 
                     this.context = null;
