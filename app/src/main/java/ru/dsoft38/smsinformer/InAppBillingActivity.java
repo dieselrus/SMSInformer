@@ -35,18 +35,10 @@ import ru.dsoft38.smsinformer.util.Security;
  */
 public class InAppBillingActivity extends Activity {
     // id вашей покупки из админки в Google Play
-
     static final String SKU_TEST = "com.example.buttonclick";
-    // id вашей покупки из админки в Google Play
-    //static final String SKU_ADS_DISABLE = "com.example.buttonclick";
-
-    static final String inappid = "com.example.buttonclick";
     static final  String TAG = "InAppBillingActivity";
 
-
     public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7QGiMiAHNPx59pir0bKmJeGB3DQ2BVL3emDFyUZAB9lwnZTMNdsxlmpRR3PhH+VL/zDL0x6bvsk1Ec8m+L26VxNASBF10yKcpbHpYPIqDSQplq46VZrijVVrxuRS/GT+q1WFCRMdth4hIoMIZ4CdoJvkWfhP5TmBGTLqjSrCmrEIuYfNaZKHhAQ5BamC8aiTMQ5kkv/PG6j6UPmb1c0A7SIAHje7Lc3LFy5bOoDhmRV4LfDyRMORyncs69YTL8P2EuJdnrXMWU+QAmiUumTqbfkEw3RaTK5RPDBHqs1gD99pKtVkmZ9Tj/HRfkYFrFJS8lWJP5fC6qt7alM+y2qwEwIDAQAB";
-
-    private static final String TAG = "InAppBillingActivity";
 
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
