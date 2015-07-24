@@ -27,7 +27,7 @@ public class SentReceiver extends BroadcastReceiver {
 
                 //SMSSend.currentSMSNumberIndex++;
                 //SMSSend.sendingSMS();
-                Pref.isSending = true;
+                SMSSend.send();
 
                 break;
             case SmsManager.RESULT_ERROR_RADIO_OFF :

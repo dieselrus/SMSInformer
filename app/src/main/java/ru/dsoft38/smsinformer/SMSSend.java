@@ -32,22 +32,20 @@ public class SMSSend {
         this.deliverPIn = deliverPIn;
     }
 
-    public void send(){
+    public static void send(){
         // db = new AlarmDb(context);
         //db.open();
         Cursor c = AlarmDb.select_SMS_DATA();
 
 
         if (c != null) {
-            while (c.moveToNext()) {
+            while (c.moveToFirst()) {
                 currentID = c.getString(0);
                 //arrayNum = c.getString(1).split(";");
                 phoneNum  = c.getString(1);
                 smsText = c.getString(3);
 
                 sendingSMS();
-
-                Pref.isSending = false;
             }
         }
 
@@ -58,16 +56,6 @@ public class SMSSend {
     }
 
     public static void sendingSMS(){
-
-        if(!Pref.isSending){
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            AlarmDb.delete_SMS_DATA(SMSSend.currentID);
-            sendingSMS();
-        }
         /*
         if ( arrayNum != null && currentSMSNumberIndex >= arrayNum.length ) {
             currentSMSNumberIndex = 0;

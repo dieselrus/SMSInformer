@@ -28,7 +28,6 @@ public class Pref {
     public static int prefLogRow = 20;
 
     public static boolean prefIsFULL = false;
-    public static boolean isSending = true;
 
     //private Context context;
 
