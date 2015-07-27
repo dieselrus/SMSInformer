@@ -21,9 +21,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     static void scheduleAlarms(Context context) {
-        InAppBilling inapp = new InAppBilling();
+        /*InAppBilling inapp = new InAppBilling();
         inapp.billingInit(context);
-        inapp = null;
+        inapp = null;*/
 
         Pref.getPref(context);
         startReceiveService(context);

@@ -100,6 +100,16 @@ public class InformerService extends IntentService {
                 Log.d(TAG_LOG, "Старт задачи " + getDateStr(cal) + "( " + TIME + " )");
             }
 
+            // Проверяем лицензию, если истек срок или не куплена, выходи
+            if(Pref.lic != Pref.License.PURCHASE && Calendar.getInstance().getTimeInMillis() > Pref.prefTimeEnd){
+                AlarmDb.insertLog("Необходимо преобрести лицензию!");
+                // Ставим новую задачу
+                AlarmReceiver.scheduleAlarms(this, TIME);
+
+                return;
+            }
+
+
             Calendar cal = Calendar.getInstance();
             //AlarmDb db = new AlarmDb(this);
             AlarmDb.insertLog("Старт задачи " + getDateStr(cal));

@@ -27,7 +27,9 @@ public class Pref {
 
     public static int prefLogRow = 20;
 
-    public static boolean prefIsFULL = false;
+    public enum License {PURCHASE, ONE_MONTH, ONE_MONTH_TRIAL, ONE_YEAR, NONE};
+    public static License lic = License.NONE;
+    public static long prefTimeEnd = 0;
 
     //private Context context;
 
@@ -61,8 +63,7 @@ public class Pref {
 
         prefMaxSMSCount = Integer.parseInt(pref.getString("log_row", "20"));
 
-        prefIsFULL = pref.getBoolean("is_full", false);
-
+        prefTimeEnd = pref.getLong("end_time", 0);
 
     }
 
@@ -73,4 +74,9 @@ public class Pref {
         editor.commit();*/
     }
 
+    public void getLicense(Context context){
+        InAppBilling inapp = new InAppBilling();
+        inapp.billingInit(context);
+        inapp = null;
+    }
 }

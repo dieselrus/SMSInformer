@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         beginDay = String.valueOf(gc.getTimeInMillis());
         endDay = String.valueOf(gc.getTimeInMillis() + 86399000);
 
-        getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay, endDay);
+        //getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay, endDay);
 
         //lvSimple.setAdapter(new CustomAdapter(this, log_time, log_text));
 
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay, endDay);
     }
 
     //==================== set log date dialog ===============================

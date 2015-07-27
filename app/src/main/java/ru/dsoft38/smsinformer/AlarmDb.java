@@ -86,6 +86,10 @@ public class AlarmDb {
         return false;
     }
 
+    public static boolean isOpen(){
+        return database.isOpen();
+    }
+
     public AlarmDb(Context context) {
         String DATABASE_NAME = "smsinformer";
         databaseOpenHelper = new DatabaseOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
