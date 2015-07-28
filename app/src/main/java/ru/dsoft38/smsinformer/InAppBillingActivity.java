@@ -36,7 +36,13 @@ public class InAppBillingActivity extends Activity {
     private static String LICENSE_STRING = "license_for_one_month_trial";
     static final  String TAG = "InAppBillingActivity";
 
-    static final String SKU_TEST = "com.example.buttonclick";
+    // Does the user have the premium upgrade?
+    boolean mIsPurchase = false;
+
+    // Does the user have an active subscription to the infinite gas plan?
+    boolean mSubscribedToMonth = false;
+    boolean mSubscribedToYear = false;
+
     static final String SKU_ONE_MONTH = "license_for_one_month";
     static final String SKU_ONE_MONTH_TRIAL = "license_for_one_month_trial";
     static final String SKU_ONE_YEAR = "license_for_year";
@@ -49,8 +55,10 @@ public class InAppBillingActivity extends Activity {
 
     public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7QGiMiAHNPx59pir0bKmJeGB3DQ2BVL3emDFyUZAB9lwnZTMNdsxlmpRR3PhH+VL/zDL0x6bvsk1Ec8m+L26VxNASBF10yKcpbHpYPIqDSQplq46VZrijVVrxuRS/GT+q1WFCRMdth4hIoMIZ4CdoJvkWfhP5TmBGTLqjSrCmrEIuYfNaZKHhAQ5BamC8aiTMQ5kkv/PG6j6UPmb1c0A7SIAHje7Lc3LFy5bOoDhmRV4LfDyRMORyncs69YTL8P2EuJdnrXMWU+QAmiUumTqbfkEw3RaTK5RPDBHqs1gD99pKtVkmZ9Tj/HRfkYFrFJS8lWJP5fC6qt7alM+y2qwEwIDAQAB";
 
-    IInAppBillingService mService;
-    ServiceConnection mServiceConn;
+    // (arbitrary) request code for the purchase flow
+    static final int RC_REQUEST = 10001;
+
+    // The helper object
     IabHelper mHelper;
 
     @Override
@@ -58,35 +66,36 @@ public class InAppBillingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.license_buy);
 
+        Log.d(TAG, "Creating IAB helper.");
         mHelper = new IabHelper(this, BASE64_PUBLIC_KEY);
 
-        billingInit();
+        // enable debug logging (for a production application, you should set this to false).
+        mHelper.enableDebugLogging(true);
 
-        mServiceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mService = IInAppBillingService.Stub.asInterface(service);
-            }
+        Log.d(TAG, "Starting setup.");
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                Log.d(TAG, "Setup finished.");
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                mService = null;
-            }
-        };
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+                    //complain("Problem setting up in-app billing: " + result);
+                    return;
+                }
 
-        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+                // Have we been disposed of in the meantime? If so, quit.
+                if (mHelper == null) return;
 
-        Button purchaseBtn = (Button) findViewById(R.id.btnBuy);
-        purchaseBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-
+                // IAB is fully set up. Now, let's get an inventory of stuff we own.
+                Log.d(TAG, "Setup successful. Querying inventory.");
+                mHelper.queryInventoryAsync(mGotInventoryListener);
             }
         });
+
+
+
+
+
 
         rbtnTrial = (RadioButton) findViewById(R.id.rbtTrial);
         rbtnTrial.setOnClickListener(new View.OnClickListener() {
@@ -186,32 +195,14 @@ public class InAppBillingActivity extends Activity {
         }
     }
 
-    private void billingInit() {
-        mHelper = new IabHelper(this, BASE64_PUBLIC_KEY);
-
-        // включаем дебагинг (в релизной версии ОБЯЗАТЕЛЬНО выставьте в false)
-        mHelper.enableDebugLogging(true);
-
-        // инициализируем; запрос асинхронен
-        // будет вызван, когда инициализация завершится
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    return;
-                }
-
-                // чекаем уже купленное
-                mHelper.queryInventoryAsync(mGotInventoryListener);
-            }
-        });
-    }
-
     // Слушатель для востановителя покупок.
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
 
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
             Log.d(TAG, "Query inventory finished.");
+
+            if (mHelper == null) return;
+
             if (result.isFailure()) {
                 Log.d(TAG, "Failed to query inventory: " + result);
                 return;
@@ -226,7 +217,7 @@ public class InAppBillingActivity extends Activity {
              */
 
             Purchase purchase_app = inventory.getPurchase(SKU_PURCHASE);
-            if(purchase_app != null){
+            if(purchase_app != null && verifyDeveloperPayload(purchase_app)){
                 Pref.lic = Pref.License.PURCHASE;
                 Pref.prefTimeEnd = -1;
 
@@ -234,7 +225,8 @@ public class InAppBillingActivity extends Activity {
             }
 
             Purchase purchase_one_month = inventory.getPurchase(SKU_ONE_MONTH);
-            if(purchase_app != null){
+            if(purchase_one_month != null && verifyDeveloperPayload(purchase_one_month)){
+                mSubscribedToMonth = true;
                 Pref.lic = Pref.License.ONE_MONTH;
                 Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
 
@@ -242,7 +234,7 @@ public class InAppBillingActivity extends Activity {
             }
 
             Purchase purchase_one_month_trial = inventory.getPurchase(SKU_ONE_MONTH_TRIAL);
-            if(purchase_app != null){
+            if(purchase_one_month_trial != null && verifyDeveloperPayload(purchase_one_month_trial)){
                 Pref.lic = Pref.License.ONE_MONTH_TRIAL;
                 Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
 
@@ -250,25 +242,22 @@ public class InAppBillingActivity extends Activity {
             }
 
             Purchase purchase_year = inventory.getPurchase(SKU_ONE_YEAR);
-            if(purchase_app != null){
+            if(purchase_year != null && verifyDeveloperPayload(purchase_year)){
+                mSubscribedToYear = true;
                 Pref.lic = Pref.License.ONE_YEAR;
                 Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 1 * 365 * 24 *60 * 60 * 1000;
 
                 return;
             }
 
-            Purchase purchase = inventory.getPurchase(SKU_TEST);
+            updateUi();
+
+            //Purchase purchase = inventory.getPurchase(SKU_TEST);
                 /*PreferencesHelper.savePurchase(
                         context,
                         PreferencesHelper.Purchase.DISABLE_ADS,
                         purchase != null && verifyDeveloperPayload(purchase));
                 ads.show(!PreferencesHelper.isAdsDisabled());*/
-            if(purchase != null){
-                Pref.lic = Pref.License.PURCHASE;
-                Pref.prefTimeEnd = -1;
-
-                return;
-            }
         }
     };
 
@@ -310,58 +299,12 @@ public class InAppBillingActivity extends Activity {
         }
     };
 
-    private void buy(String LICENSE){
-        ArrayList skuList = new ArrayList();
-        skuList.add(LICENSE);
-        Bundle querySkus = new Bundle();
-        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-        Bundle skuDetails;
-        try {
-            Log.d(TAG, getPackageName());
-            skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
 
-            int response = skuDetails.getInt("RESPONSE_CODE");
-            Log.d(TAG, response + "");
-            if (response == 0) {
-
-                ArrayList<String> responseList = skuDetails
-                        .getStringArrayList("DETAILS_LIST");
-
-                for (String thisResponse : responseList) {
-                    JSONObject object = new JSONObject(thisResponse);
-                    String sku = object.getString("productId");
-                    String price = object.getString("price");
-
-                    if (sku.equals(LICENSE)) {
-                        System.out.println("price " + price);
-                        Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
-                                "inapp",
-                                "");
-                        PendingIntent pendingIntent = buyIntentBundle
-                                .getParcelable("BUY_INTENT");
-                        startIntentSenderForResult(
-                                pendingIntent.getIntentSender(), 1001,
-                                new Intent(), Integer.valueOf(0),
-                                Integer.valueOf(0), Integer.valueOf(0));
-                    }
-                }
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        if (mServiceConn != null) {
-            unbindService(mServiceConn);
-        }
     }
 
     @Override
@@ -382,5 +325,26 @@ public class InAppBillingActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    // updates UI to reflect model
+    public void updateUi() {
+        // update the car color to reflect premium status or lack thereof
+        rbtnMonth.setVisibility(mIsPurchase ? View.GONE : View.VISIBLE);
+
+        // "Upgrade" button is only visible if the user is not premium
+        //findViewById(R.id.upgrade_button).setVisibility(mIsPremium ? View.GONE : View.VISIBLE);
+
+        // "Get infinite gas" button is only visible if the user is not subscribed yet
+        rbtnMonth.setVisibility(mSubscribedToMonth ? View.GONE : View.VISIBLE);
+
+        // update gas gauge to reflect tank status
+       /* if (mSubscribedToInfiniteGas) {
+            ((ImageView)findViewById(R.id.gas_gauge)).setImageResource(R.drawable.gas_inf);
+        }
+        else {
+            int index = mTank >= TANK_RES_IDS.length ? TANK_RES_IDS.length - 1 : mTank;
+            ((ImageView)findViewById(R.id.gas_gauge)).setImageResource(TANK_RES_IDS[index]);
+        }*/
     }
 }
