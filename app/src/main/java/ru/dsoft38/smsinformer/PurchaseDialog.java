@@ -2,7 +2,6 @@ package ru.dsoft38.smsinformer;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 /**
  * Created by diesel on 27.07.2015.
@@ -119,7 +117,7 @@ public class PurchaseDialog extends DialogFragment {
             }
         });
 
-        Button btnOk = (Button) view.findViewById(R.id.btnYes);
+        Button btnOk = (Button) view.findViewById(R.id.btnBuy);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

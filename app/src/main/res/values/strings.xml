@@ -11,8 +11,10 @@
     <string name="log">Журнал</string>
     <string name="action_activation">Активация</string>
 
-    <string name="cancel">Отмена</string>
-    <string name="yes">Да</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="btn_yes">Да</string>
+    <string name="btn_buy">Купить</string>
+
     <string name="activation_title_purchase">Выберите вариант активации</string>
     <string name="activation_month_trial">Попробовать на 30 дней (далее автоматически будет списываться абонентская плата за месяц - 30 руб.)</string>
     <string name="activation_month">Ежемесячная подписка (30 руб.)</string>

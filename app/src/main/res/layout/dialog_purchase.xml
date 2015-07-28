@@ -98,10 +98,10 @@
         android:layout_below="@+id/rbtPurchase">
 
         <Button
-            android:id="@+id/btnYes"
+            android:id="@+id/btnBuy"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/yes"
+            android:text="@string/btn_yes"
             android:layout_below="@+id/rbtPurchase"
             android:layout_toRightOf="@+id/relativeLayout"
             android:layout_toEndOf="@+id/relativeLayout"
@@ -112,8 +112,8 @@
             android:id="@+id/btnCancel"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel"
-            android:layout_alignTop="@+id/btnYes"
+            android:text="@string/btn_cancel"
+            android:layout_alignTop="@+id/btnBuy"
             android:layout_alignRight="@+id/textView4"
             android:layout_alignEnd="@+id/textView4"
             android:padding="15dp">

@@ -13,6 +13,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
@@ -32,8 +33,19 @@ import ru.dsoft38.smsinformer.util.Purchase;
  */
 public class InAppBillingActivity extends Activity {
     // id вашей покупки из админки в Google Play
-    static final String SKU_TEST = "com.example.buttonclick";
+    private static String LICENSE_STRING = "license_for_one_month_trial";
     static final  String TAG = "InAppBillingActivity";
+
+    static final String SKU_TEST = "com.example.buttonclick";
+    static final String SKU_ONE_MONTH = "license_for_one_month";
+    static final String SKU_ONE_MONTH_TRIAL = "license_for_one_month_trial";
+    static final String SKU_ONE_YEAR = "license_for_year";
+    static final String SKU_PURCHASE = "license_purchase_app";
+
+    private RadioButton rbtnTrial = null;
+    private RadioButton rbtnMonth = null;
+    private RadioButton rbtnYear = null;
+    private RadioButton rbtnPurchase = null;
 
     public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7QGiMiAHNPx59pir0bKmJeGB3DQ2BVL3emDFyUZAB9lwnZTMNdsxlmpRR3PhH+VL/zDL0x6bvsk1Ec8m+L26VxNASBF10yKcpbHpYPIqDSQplq46VZrijVVrxuRS/GT+q1WFCRMdth4hIoMIZ4CdoJvkWfhP5TmBGTLqjSrCmrEIuYfNaZKHhAQ5BamC8aiTMQ5kkv/PG6j6UPmb1c0A7SIAHje7Lc3LFy5bOoDhmRV4LfDyRMORyncs69YTL8P2EuJdnrXMWU+QAmiUumTqbfkEw3RaTK5RPDBHqs1gD99pKtVkmZ9Tj/HRfkYFrFJS8lWJP5fC6qt7alM+y2qwEwIDAQAB";
 
@@ -71,49 +83,81 @@ public class InAppBillingActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                ArrayList skuList = new ArrayList();
-                skuList.add(SKU_TEST);
-                Bundle querySkus = new Bundle();
-                querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-                Bundle skuDetails;
+
+
+            }
+        });
+
+        rbtnTrial = (RadioButton) findViewById(R.id.rbtTrial);
+        rbtnTrial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rbtnTrial.setChecked(true);
+                rbtnMonth.setChecked(false);
+                rbtnYear.setChecked(false);
+                rbtnPurchase.setChecked(false);
+
+                LICENSE_STRING = "license_for_one_month_trial";
+            }
+        });
+
+        rbtnMonth = (RadioButton) findViewById(R.id.rbtMonth);
+        rbtnMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rbtnTrial.setChecked(false);
+                rbtnMonth.setChecked(true);
+                rbtnYear.setChecked(false);
+                rbtnPurchase.setChecked(false);
+
+                LICENSE_STRING = "license_for_one_month";
+            }
+        });
+
+        rbtnYear = (RadioButton) findViewById(R.id.rbtYear);
+        rbtnYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rbtnTrial.setChecked(false);
+                rbtnMonth.setChecked(false);
+                rbtnYear.setChecked(true);
+                rbtnPurchase.setChecked(false);
+
+                LICENSE_STRING = "license_for_year";
+            }
+        });
+
+        rbtnPurchase = (RadioButton) findViewById(R.id.rbtPurchase);
+        rbtnPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rbtnTrial.setChecked(false);
+                rbtnMonth.setChecked(false);
+                rbtnYear.setChecked(false);
+                rbtnPurchase.setChecked(true);
+
+                LICENSE_STRING = "license_purchase_app";
+            }
+        });
+
+        Button btnOk = (Button) findViewById(R.id.btnBuy);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buy(LICENSE_STRING);
+            }
+        });
+
+        Button btnCancel = (Button) findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //((About) getActivity()).cancelClicked();
                 try {
-                    Log.d(TAG, getPackageName());
-                    skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
-
-                    int response = skuDetails.getInt("RESPONSE_CODE");
-                    Log.d(TAG, response + "");
-                    if (response == 0) {
-
-                        ArrayList<String> responseList = skuDetails
-                                .getStringArrayList("DETAILS_LIST");
-
-                        for (String thisResponse : responseList) {
-                            JSONObject object = new JSONObject(thisResponse);
-                            String sku = object.getString("productId");
-                            String price = object.getString("price");
-
-                            if (sku.equals(SKU_TEST)) {
-                                System.out.println("price " + price);
-                                Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
-                                        "inapp",
-                                                "");
-                                PendingIntent pendingIntent = buyIntentBundle
-                                        .getParcelable("BUY_INTENT");
-                                startIntentSenderForResult(
-                                        pendingIntent.getIntentSender(), 1001,
-                                        new Intent(), Integer.valueOf(0),
-                                        Integer.valueOf(0), Integer.valueOf(0));
-                            }
-                        }
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IntentSender.SendIntentException e) {
-                    e.printStackTrace();
+                    this.finalize();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
-
             }
         });
     }
@@ -127,7 +171,7 @@ public class InAppBillingActivity extends Activity {
                 try {
                     JSONObject jo = new JSONObject(purchaseData);
 
-                    String sku = jo.getString(SKU_TEST);
+                    String sku = jo.getString(LICENSE_STRING);
                     Toast.makeText(
                             InAppBillingActivity.this,
                             "You have bought the " + sku
@@ -181,13 +225,50 @@ public class InAppBillingActivity extends Activity {
              * см. verifyDeveloperPayload().
              */
 
+            Purchase purchase_app = inventory.getPurchase(SKU_PURCHASE);
+            if(purchase_app != null){
+                Pref.lic = Pref.License.PURCHASE;
+                Pref.prefTimeEnd = -1;
+
+                return;
+            }
+
+            Purchase purchase_one_month = inventory.getPurchase(SKU_ONE_MONTH);
+            if(purchase_app != null){
+                Pref.lic = Pref.License.ONE_MONTH;
+                Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
+
+                return;
+            }
+
+            Purchase purchase_one_month_trial = inventory.getPurchase(SKU_ONE_MONTH_TRIAL);
+            if(purchase_app != null){
+                Pref.lic = Pref.License.ONE_MONTH_TRIAL;
+                Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
+
+                return;
+            }
+
+            Purchase purchase_year = inventory.getPurchase(SKU_ONE_YEAR);
+            if(purchase_app != null){
+                Pref.lic = Pref.License.ONE_YEAR;
+                Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 1 * 365 * 24 *60 * 60 * 1000;
+
+                return;
+            }
+
             Purchase purchase = inventory.getPurchase(SKU_TEST);
-/*                PreferencesHelper.savePurchase(
+                /*PreferencesHelper.savePurchase(
                         context,
                         PreferencesHelper.Purchase.DISABLE_ADS,
                         purchase != null && verifyDeveloperPayload(purchase));
                 ads.show(!PreferencesHelper.isAdsDisabled());*/
+            if(purchase != null){
+                Pref.lic = Pref.License.PURCHASE;
+                Pref.prefTimeEnd = -1;
 
+                return;
+            }
         }
     };
 
@@ -216,7 +297,7 @@ public class InAppBillingActivity extends Activity {
 
             Log.d(TAG, "Purchase successful.");
 
-            if (purchase.getSku().equals(SKU_TEST)) {
+            if (purchase.getSku().equals(LICENSE_STRING)) {
 
                 Log.d(TAG, "Purchase for disabling ads done. Congratulating user.");
                 Toast.makeText(getApplicationContext(), "Purchase for disabling ads done.", Toast.LENGTH_SHORT);
@@ -228,6 +309,51 @@ public class InAppBillingActivity extends Activity {
 
         }
     };
+
+    private void buy(String LICENSE){
+        ArrayList skuList = new ArrayList();
+        skuList.add(LICENSE);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+        Bundle skuDetails;
+        try {
+            Log.d(TAG, getPackageName());
+            skuDetails = mService.getSkuDetails(3, getPackageName(), "inapp", querySkus);
+
+            int response = skuDetails.getInt("RESPONSE_CODE");
+            Log.d(TAG, response + "");
+            if (response == 0) {
+
+                ArrayList<String> responseList = skuDetails
+                        .getStringArrayList("DETAILS_LIST");
+
+                for (String thisResponse : responseList) {
+                    JSONObject object = new JSONObject(thisResponse);
+                    String sku = object.getString("productId");
+                    String price = object.getString("price");
+
+                    if (sku.equals(LICENSE)) {
+                        System.out.println("price " + price);
+                        Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
+                                "inapp",
+                                "");
+                        PendingIntent pendingIntent = buyIntentBundle
+                                .getParcelable("BUY_INTENT");
+                        startIntentSenderForResult(
+                                pendingIntent.getIntentSender(), 1001,
+                                new Intent(), Integer.valueOf(0),
+                                Integer.valueOf(0), Integer.valueOf(0));
+                    }
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onDestroy() {
