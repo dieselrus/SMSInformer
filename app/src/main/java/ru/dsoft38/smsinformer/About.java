@@ -39,10 +39,10 @@ public class About extends FragmentActivity {
 
     // id вашей покупки из админки в Google Play
     static final String SKU_TEST = "com.example.buttonclick";
-    static final String SKU_ONE_MONTH = "license_for_one_month";
-    static final String SKU_ONE_MONTH_TRIAL = "license_for_one_month_trial";
-    static final String SKU_ONE_YEAR = "license_for_year";
-    static final String SKU_PURCHASE = "license_purchase_app";
+    //static final String SKU_ONE_MONTH = "license_for_one_month";
+    //static final String SKU_ONE_MONTH_TRIAL = "license_for_one_month_trial";
+    //static final String SKU_ONE_YEAR = "license_for_year";
+    //static final String SKU_PURCHASE = "license_purchase_app";
 
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
@@ -132,9 +132,9 @@ public class About extends FragmentActivity {
         }
     }
 
-    private  void buy(){
+    private  void buy(String LICENSE_STRING){
         ArrayList skuList = new ArrayList();
-        skuList.add(SKU_TEST);
+        skuList.add(LICENSE_STRING);
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
         Bundle skuDetails;
@@ -154,7 +154,7 @@ public class About extends FragmentActivity {
                     String sku = object.getString("productId");
                     String price = object.getString("price");
 
-                    if (sku.equals(SKU_TEST)) {
+                    if (sku.equals(LICENSE_STRING)) {
                         System.out.println("price " + price);
                         Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
                                 "inapp",
@@ -178,14 +178,14 @@ public class About extends FragmentActivity {
 
     }
 
-    public void okClicked() {
-        Toast.makeText(getApplicationContext(), "Вы выбрали кнопку OK!",
-                Toast.LENGTH_LONG).show();
+    public void okClicked(String LICENSE_STRING) {
+        //Toast.makeText(getApplicationContext(), "Вы выбрали кнопку OK!", Toast.LENGTH_LONG).show();
+        myDialogFragment.dismiss();
+        buy(LICENSE_STRING);
     }
 
     public void cancelClicked() {
-        Toast.makeText(getApplicationContext(), "Вы выбрали кнопку отмены!",
-                Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "Вы выбрали кнопку отмены!",Toast.LENGTH_LONG).show();
         myDialogFragment.dismiss();
     }
 }

@@ -43,6 +43,9 @@ public class ReceiveService extends Service {
         registerReceiver(sentReceiver, new IntentFilter(SENT_SMS_FLAG));
 
         super.onCreate();
+
+        //Intent i = new Intent(this, MainActivity.class);
+        //i.setAction(MainActivity.SERVICE_START);
     }
 
     @Override

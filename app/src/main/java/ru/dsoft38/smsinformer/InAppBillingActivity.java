@@ -96,7 +96,7 @@ public class InAppBillingActivity extends Activity {
                                 System.out.println("price " + price);
                                 Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), sku,
                                         "inapp",
-                                                "NiNt36FV@FWk3IsONV~bXqLicoIdmfY$pLt~jah8Lno~");
+                                                "");
                                 PendingIntent pendingIntent = buyIntentBundle
                                         .getParcelable("BUY_INTENT");
                                 startIntentSenderForResult(

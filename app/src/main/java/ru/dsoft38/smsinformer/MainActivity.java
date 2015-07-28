@@ -3,7 +3,10 @@ package ru.dsoft38.smsinformer;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +26,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String SERVICE_START = "ru.dsoft38.smsinformer_SERVICE_START";
 
     private ListView lvSimple = null;
     private ArrayList log_time = null;
@@ -48,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        registerReceiver(reciverAlertDBOpen, new IntentFilter(SERVICE_START));
 
         Pref.getPref(this);
         iLimit = Pref.prefLogRow;
@@ -220,5 +227,15 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         //Log.d(LOG_TAG, "onDestroy");
+        unregisterReceiver(reciverAlertDBOpen);
     }
+
+    BroadcastReceiver reciverAlertDBOpen = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equalsIgnoreCase(SERVICE_START)){
+                getLog(String.valueOf(iLimit), String.valueOf(iOffset), beginDay, endDay);
+            }
+        }
+    };
 }

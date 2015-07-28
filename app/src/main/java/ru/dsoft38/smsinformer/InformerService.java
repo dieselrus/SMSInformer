@@ -3,6 +3,7 @@ package ru.dsoft38.smsinformer;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -90,7 +91,7 @@ public class InformerService extends IntentService {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(UTIME);
             //AlarmDb db = new AlarmDb(this);
-            AlarmDb.insertLog("Задача установлена на " + getDateStr(cal));
+            AlarmDb.insertLog("Задача установлена");
 
         } else if (intent.getAction().equalsIgnoreCase(RUN_ALARM)) { // Сигнализация сработала!
 
@@ -102,7 +103,7 @@ public class InformerService extends IntentService {
 
             // Проверяем лицензию, если истек срок или не куплена, выходи
             if(Pref.lic != Pref.License.PURCHASE && Calendar.getInstance().getTimeInMillis() > Pref.prefTimeEnd){
-                AlarmDb.insertLog("Необходимо преобрести лицензию!");
+                AlarmDb.insertLog("Необходимо активировать программу!");
                 // Ставим новую задачу
                 AlarmReceiver.scheduleAlarms(this, TIME);
 
@@ -112,7 +113,7 @@ public class InformerService extends IntentService {
 
             Calendar cal = Calendar.getInstance();
             //AlarmDb db = new AlarmDb(this);
-            AlarmDb.insertLog("Старт задачи " + getDateStr(cal));
+            AlarmDb.insertLog("Старт задачи");
 
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -187,6 +188,7 @@ public class InformerService extends IntentService {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                AlarmDb.insertLog("Возникли неизвестные проблемы.");
             }
 
             // Ставим новую задачу

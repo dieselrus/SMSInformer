@@ -2,6 +2,7 @@ package ru.dsoft38.smsinformer;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -96,7 +97,7 @@ public class AlarmDb {
     }
 
     public static void open() throws SQLException {
-            database = databaseOpenHelper.getWritableDatabase();
+        database = databaseOpenHelper.getWritableDatabase();
     }
 
     public static void close() {
