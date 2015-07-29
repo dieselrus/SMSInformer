@@ -16,9 +16,10 @@
     <string name="btn_buy">Купить</string>
 
     <string name="activation_title_purchase">Выберите вариант активации</string>
-    <string name="activation_month_trial">Попробовать на 30 дней (далее автоматически будет списываться абонентская плата за месяц - 30 руб.)</string>
+    <string name="activation_month_trial">Пробная версия на 30 дней (далее автоматически будет списываться абонентская плата за месяц - 30 руб.)</string>
     <string name="activation_month">Ежемесячная подписка (30 руб.)</string>
-    <string name="activation_year">Годовая подписка (300 руб.)</string>
+    <string name="activation_year">Годовая подписка (200 руб.)</string>
     <string name="activation_purchase">Купить программу (300 руб.)</string>
+    <string name="activation_help">Отменить подписку можно через Google Play Market (оплата за подписку возвращена не будет).</string>
 
 </resources>

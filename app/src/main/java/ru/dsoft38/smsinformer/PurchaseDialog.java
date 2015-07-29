@@ -121,7 +121,7 @@ public class PurchaseDialog extends DialogFragment {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((About) getActivity()).okClicked(LICENSE_STRING);
+                //((About) getActivity()).okClicked(LICENSE_STRING);
             }
         });
 
@@ -129,7 +129,7 @@ public class PurchaseDialog extends DialogFragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((About) getActivity()).cancelClicked();
+                //((About) getActivity()).cancelClicked();
             }
         });
 

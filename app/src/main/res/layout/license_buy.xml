@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
     <TextView
@@ -19,105 +19,36 @@
         android:gravity="center">
     </TextView>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="@string/activation_month_trial"
+        android:id="@+id/btnMonth"
+        android:onClick="onBuyMonthButtonClicked" />
 
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rbtTrial"
-            android:checked="true"
-            android:text="@string/activation_month_trial"
-            android:layout_below="@+id/textView1"
-            android:layout_toLeftOf="@+id/textView"
-            android:layout_toStartOf="@+id/textView" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rbtMonth"
-            android:checked="false"
-            android:text="@string/activation_month"
-            android:layout_below="@+id/rbtTrial"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/textView"
-            android:layout_toStartOf="@+id/textView" />
+        android:text="@string/activation_year"
+        android:id="@+id/btnYear"
+        android:onClick="onBuyYearButtonClicked" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="@string/activation_purchase"
+        android:id="@+id/btnPurchase"
+        android:onClick="onPurchaseAppButtonClicked" />
 
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rbtYear"
-            android:checked="false"
-            android:text="@string/activation_year"
-            android:layout_below="@+id/rbtMonth"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/textView3"
-            android:layout_toStartOf="@+id/textView3" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rbtPurchase"
-            android:checked="false"
-            android:text="@string/activation_purchase"
-            android:layout_below="@+id/rbtYear"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/textView4"
-            android:layout_toStartOf="@+id/textView4" />
-
-    </LinearLayout>
-
-    <TableRow
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rbtPurchase">
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/activation_help"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:padding="15dp" />
 
-        <Button
-            android:id="@+id/btnBuy"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_buy"
-            android:layout_below="@+id/rbtPurchase"
-            android:layout_toRightOf="@+id/relativeLayout"
-            android:layout_toEndOf="@+id/relativeLayout"
-            android:padding="15dp">
-        </Button>
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_cancel"
-            android:layout_alignTop="@+id/btnBuy"
-            android:layout_alignRight="@+id/textView4"
-            android:layout_alignEnd="@+id/textView4"
-            android:padding="15dp">
-        </Button>
-    </TableRow>
 </LinearLayout>
 
