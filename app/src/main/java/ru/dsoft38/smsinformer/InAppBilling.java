@@ -14,7 +14,6 @@ import ru.dsoft38.smsinformer.util.Purchase;
 public class InAppBilling {
 
     // id вашей покупки из админки в Google Play
-    static final String SKU_TEST = "com.example.buttonclick";
     static final String SKU_ONE_MONTH = "license_for_one_month";
     static final String SKU_ONE_MONTH_TRIAL = "license_for_one_month_trial";
     static final String SKU_ONE_YEAR = "license_for_year";
@@ -49,9 +48,11 @@ public class InAppBilling {
     // Слушатель для востановителя покупок.
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
 
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
             Log.d(TAG, "Query inventory finished.");
+
+            if (mHelper == null) return;
+
             if (result.isFailure()) {
                 Log.d(TAG, "Failed to query inventory: " + result);
                 return;
@@ -66,48 +67,25 @@ public class InAppBilling {
              */
 
             Purchase purchase_app = inventory.getPurchase(SKU_PURCHASE);
-            if(purchase_app != null){
+            if(purchase_app != null && verifyDeveloperPayload(purchase_app)){
                 Pref.lic = Pref.License.PURCHASE;
-                Pref.prefTimeEnd = -1;
-
-                return;
             }
 
             Purchase purchase_one_month = inventory.getPurchase(SKU_ONE_MONTH);
-            if(purchase_app != null){
+            if(purchase_one_month != null && verifyDeveloperPayload(purchase_one_month)){
+                Pref.mSubscribedToMonth = true;
                 Pref.lic = Pref.License.ONE_MONTH;
-                Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
-
-                return;
             }
 
             Purchase purchase_one_month_trial = inventory.getPurchase(SKU_ONE_MONTH_TRIAL);
-            if(purchase_app != null){
+            if(purchase_one_month_trial != null && verifyDeveloperPayload(purchase_one_month_trial)){
                 Pref.lic = Pref.License.ONE_MONTH_TRIAL;
-                Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
-
-                return;
             }
 
             Purchase purchase_year = inventory.getPurchase(SKU_ONE_YEAR);
-            if(purchase_app != null){
+            if(purchase_year != null && verifyDeveloperPayload(purchase_year)){
+                Pref.mSubscribedToYear = true;
                 Pref.lic = Pref.License.ONE_YEAR;
-                Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 1 * 365 * 24 *60 * 60 * 1000;
-
-                return;
-            }
-
-            Purchase purchase = inventory.getPurchase(SKU_TEST);
-                /*PreferencesHelper.savePurchase(
-                        context,
-                        PreferencesHelper.Purchase.DISABLE_ADS,
-                        purchase != null && verifyDeveloperPayload(purchase));
-                ads.show(!PreferencesHelper.isAdsDisabled());*/
-            if(purchase != null){
-                Pref.lic = Pref.License.PURCHASE;
-                Pref.prefTimeEnd = -1;
-
-                return;
             }
         }
     };

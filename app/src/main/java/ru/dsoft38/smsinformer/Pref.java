@@ -29,9 +29,10 @@ public class Pref {
 
     public enum License {PURCHASE, ONE_MONTH, ONE_MONTH_TRIAL, ONE_YEAR, NONE};
     public static License lic = License.NONE;
-    public static long prefTimeEnd = 0;
 
-    //private Context context;
+    public static boolean mSubscribedToMonth = false;
+    public static boolean mSubscribedToYear = false;
+    public static boolean mIsPurchase = false;
 
     public Pref(Context context){
         //this.context = context;
@@ -63,7 +64,7 @@ public class Pref {
 
         prefMaxSMSCount = Integer.parseInt(pref.getString("log_row", "20"));
 
-        prefTimeEnd = pref.getLong("end_time", 0);
+        //prefTimeEnd = pref.getLong("end_time", 0);
 
     }
 

@@ -48,7 +48,8 @@
         android:text="@string/activation_help"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
-        android:padding="15dp" />
+        android:padding="15dp"
+        android:gravity="center" />
 
 </LinearLayout>
 

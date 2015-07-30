@@ -29,13 +29,17 @@ public class About extends Activity {
                 "<p>&nbsp;</p><p><strong>Автор: </strong>Гамза Денис.</p><p><strong>E-mail: </strong><a href=\"mailto:denis.gamza@gmail.com\">denis.gamza@gmail.com</a></p>" +
                 "</body></html>"));
 
-        tv.setOnClickListener(new View.OnClickListener() {
+        /*tv.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 finish();
             }
-        });
+        });*/
 
         btnActivation = (Button) findViewById(R.id.btnActivation);
+
+        if(Pref.lic == Pref.License.PURCHASE){
+            btnActivation.setVisibility(View.INVISIBLE);
+        }
 
     }
 

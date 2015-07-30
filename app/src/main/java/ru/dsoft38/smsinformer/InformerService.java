@@ -102,7 +102,7 @@ public class InformerService extends IntentService {
             }
 
             // Проверяем лицензию, если истек срок или не куплена, выходи
-            if(Pref.lic != Pref.License.PURCHASE && Calendar.getInstance().getTimeInMillis() > Pref.prefTimeEnd){
+            if(Pref.lic == Pref.License.NONE){
                 AlarmDb.insertLog("Необходимо активировать программу!");
                 // Ставим новую задачу
                 AlarmReceiver.scheduleAlarms(this, TIME);

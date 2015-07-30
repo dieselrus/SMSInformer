@@ -36,13 +36,6 @@ public class InAppBillingActivity extends Activity {
     // id вашей покупки из админки в Google Play
     static final  String TAG = "InAppBillingActivity";
 
-    // Does the user have the premium upgrade?
-    boolean mIsPurchase = false;
-
-    // Does the user have an active subscription to the infinite gas plan?
-    boolean mSubscribedToMonth = false;
-    boolean mSubscribedToYear = false;
-
     static final String SKU_ONE_MONTH = "license_for_one_month";
     static final String SKU_ONE_MONTH_TRIAL = "license_for_one_month_trial";
     static final String SKU_ONE_YEAR = "license_for_year";
@@ -108,7 +101,7 @@ public class InAppBillingActivity extends Activity {
     public void onBuyMonthButtonClicked(View arg0) {
         Log.d(TAG, "Buy gas button clicked.");
 
-        if (mSubscribedToMonth) {
+        if (Pref.mSubscribedToMonth) {
             //complain("No need! You're subscribed to infinite gas. Isn't that awesome?");
             return;
         }
@@ -131,7 +124,7 @@ public class InAppBillingActivity extends Activity {
     public void onBuyYearButtonClicked(View arg0) {
         Log.d(TAG, "Buy gas button clicked.");
 
-        if (mSubscribedToYear) {
+        if (Pref.mSubscribedToYear) {
             //complain("No need! You're subscribed to infinite gas. Isn't that awesome?");
             return;
         }
@@ -226,35 +219,23 @@ public class InAppBillingActivity extends Activity {
             Purchase purchase_app = inventory.getPurchase(SKU_PURCHASE);
             if(purchase_app != null && verifyDeveloperPayload(purchase_app)){
                 Pref.lic = Pref.License.PURCHASE;
-                Pref.prefTimeEnd = -1;
-
-                //return;
             }
 
             Purchase purchase_one_month = inventory.getPurchase(SKU_ONE_MONTH);
             if(purchase_one_month != null && verifyDeveloperPayload(purchase_one_month)){
-                mSubscribedToMonth = true;
+                Pref.mSubscribedToMonth = true;
                 Pref.lic = Pref.License.ONE_MONTH;
-                //Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
-
-                //return;
             }
 
             Purchase purchase_one_month_trial = inventory.getPurchase(SKU_ONE_MONTH_TRIAL);
             if(purchase_one_month_trial != null && verifyDeveloperPayload(purchase_one_month_trial)){
                 Pref.lic = Pref.License.ONE_MONTH_TRIAL;
-                //Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 30 * 24 *60 * 60 * 1000;
-
-                //return;
             }
 
             Purchase purchase_year = inventory.getPurchase(SKU_ONE_YEAR);
             if(purchase_year != null && verifyDeveloperPayload(purchase_year)){
-                mSubscribedToYear = true;
+                Pref.mSubscribedToYear = true;
                 Pref.lic = Pref.License.ONE_YEAR;
-                //Pref.prefTimeEnd = purchase_app.getPurchaseTime() + 1 * 365 * 24 *60 * 60 * 1000;
-
-                //return;
             }
 
             updateUi();
@@ -310,7 +291,7 @@ public class InAppBillingActivity extends Activity {
                 // bought the premium upgrade!
                 Log.d(TAG, "Purchase is premium upgrade. Congratulating user.");
                 alert("Thank you for upgrading to premium!");
-                mIsPurchase = true;
+                Pref.mIsPurchase = true;
                 Pref.lic = Pref.License.PURCHASE;
                 updateUi();
                 setWaitScreen(false);
@@ -319,7 +300,7 @@ public class InAppBillingActivity extends Activity {
                 // bought the infinite gas subscription
                 Log.d(TAG, "Infinite month subscription purchased.");
                 alert("Thank you for subscribing to month!");
-                mSubscribedToMonth = true;
+                Pref.mSubscribedToMonth = true;
                 Pref.lic = Pref.License.ONE_MONTH;
                 //mTank = TANK_MAX;
                 updateUi();
@@ -329,7 +310,7 @@ public class InAppBillingActivity extends Activity {
                 // bought the infinite gas subscription
                 Log.d(TAG, "Infinite year subscription purchased.");
                 alert("Thank you for subscribing to year!");
-                mSubscribedToYear = true;
+                Pref.mSubscribedToYear = true;
                 Pref.lic = Pref.License.ONE_YEAR;
                 //mTank = TANK_MAX;
                 updateUi();
@@ -419,9 +400,9 @@ public class InAppBillingActivity extends Activity {
         //btnMonth.setVisibility(mSubscribedToMonth ? View.GONE : View.VISIBLE);
         //btnYear.setVisibility(mSubscribedToYear ? View.GONE : View.VISIBLE);
 
-        btnPurchase.setEnabled(!mIsPurchase);
-        btnMonth.setEnabled(!(mSubscribedToMonth | mSubscribedToYear));
-        btnYear.setEnabled(!(mSubscribedToMonth | mSubscribedToYear));
+        btnPurchase.setEnabled(!Pref.mIsPurchase);
+        btnMonth.setEnabled(!(Pref.mSubscribedToMonth | Pref.mSubscribedToYear));
+        btnYear.setEnabled(!(Pref.mSubscribedToMonth | Pref.mSubscribedToYear));
 
         // "Upgrade" button is only visible if the user is not premium
         //findViewById(R.id.upgrade_button).setVisibility(mIsPremium ? View.GONE : View.VISIBLE);
