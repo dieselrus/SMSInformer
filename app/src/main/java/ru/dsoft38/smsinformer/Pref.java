@@ -34,6 +34,8 @@ public class Pref {
     public static boolean mSubscribedToYear = false;
     public static boolean mIsPurchase = false;
 
+    public static boolean checkLicense = false;
+
     public Pref(Context context){
         //this.context = context;
     }
@@ -75,7 +77,7 @@ public class Pref {
         editor.commit();*/
     }
 
-    public void getLicense(Context context){
+    public static void getLicense(Context context){
         InAppBilling inapp = new InAppBilling();
         inapp.billingInit(context);
         inapp = null;

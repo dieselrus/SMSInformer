@@ -7,6 +7,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_about" android:title="@string/action_about"
         android:orderInCategory="100" app:showAsAction="never" />
-    <!--<item android:id="@+id/action_activation" android:title="@string/action_activation"
-        android:orderInCategory="100" app:showAsAction="never" />-->
+    <item android:id="@+id/action_smsqueuing" android:title="@string/action_smsqueuing"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

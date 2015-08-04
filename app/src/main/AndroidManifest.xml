@@ -53,6 +53,11 @@
         </activity>
 
         <activity
+            android:name=".SMSQueuing"
+            android:label="@string/title_activity_about" >
+        </activity>
+
+        <activity
             android:name=".InAppBillingActivity"
             android:label="@string/title_activity_activation" >
         </activity>InAppBillingActivity

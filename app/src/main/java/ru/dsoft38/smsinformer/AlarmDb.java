@@ -8,7 +8,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class AlarmDb {
@@ -77,6 +79,10 @@ public class AlarmDb {
         //return database.rawQuery("SELECT _id, datetime, module, text FROM tbLog LIMIT 200", null);
     }
 
+    public static Cursor select_smsqueuing() {
+        return database.rawQuery("SELECT _id, phones, msg FROM tbSendSms", null);
+    }
+
     public boolean delete_old_log(String _id){
 
         if(!database.isOpen())
@@ -93,7 +99,34 @@ public class AlarmDb {
 
     public AlarmDb(Context context) {
         String DATABASE_NAME = "smsinformer";
+        String FILE_DIR = "Android"; //"Android/data/ru.dsoft38.smsinformer";
         databaseOpenHelper = new DatabaseOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        /*
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + FILE_DIR
+                + File.separator + DATABASE_NAME;
+
+        boolean mExternalStorageAvailable = false;
+        boolean mExternalStorageWriteable = false;
+        String state = Environment.getExternalStorageState();
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // Мы можем читать и писать на неё
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+            new File(path).mkdirs();
+            databaseOpenHelper = new DatabaseOpenHelper(context, path, null, DATABASE_VERSION);
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            // Только читать
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+            databaseOpenHelper = new DatabaseOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
+        } else {
+            // Не можем ничего делать. Возможно карты нет
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+            databaseOpenHelper = new DatabaseOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+        */
     }
 
     public static void open() throws SQLException {
@@ -102,6 +135,7 @@ public class AlarmDb {
 
     public static void close() {
         if (database != null) database.close();
+        //SQLiteOpenHelper.close();
     }
 
     private class DatabaseOpenHelper extends SQLiteOpenHelper {

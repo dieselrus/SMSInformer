@@ -26,6 +26,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         inapp = null;*/
 
         Pref.getPref(context);
+        Pref.getLicense(context);
         startReceiveService(context);
         long NOW = Calendar.getInstance().getTimeInMillis();
         startInformerService(context, NOW);

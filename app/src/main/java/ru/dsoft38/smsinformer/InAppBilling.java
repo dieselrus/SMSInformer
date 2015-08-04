@@ -87,6 +87,8 @@ public class InAppBilling {
                 Pref.mSubscribedToYear = true;
                 Pref.lic = Pref.License.ONE_YEAR;
             }
+
+            Pref.checkLicense = true;
         }
     };
 

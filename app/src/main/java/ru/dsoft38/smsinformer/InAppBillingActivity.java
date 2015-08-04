@@ -62,7 +62,7 @@ public class InAppBillingActivity extends Activity {
         mHelper = new IabHelper(this, BASE64_PUBLIC_KEY);
 
         // enable debug logging (for a production application, you should set this to false).
-        mHelper.enableDebugLogging(true);
+        //mHelper.enableDebugLogging(true);
 
         Log.d(TAG, "Starting setup.");
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
@@ -317,6 +317,8 @@ public class InAppBillingActivity extends Activity {
                 setWaitScreen(false);
             }
 
+            Pref.checkLicense = true;
+
         }
     };
 
@@ -355,7 +357,7 @@ public class InAppBillingActivity extends Activity {
     }
 
     void complain(String message) {
-        Log.e(TAG, "**** TrivialDrive Error: " + message);
+        Log.e(TAG, "**** SMS Informer Error: " + message);
         alert("Error: " + message);
     }
 

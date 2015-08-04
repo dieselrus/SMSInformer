@@ -4,12 +4,14 @@
     <string name="title_activity_about">О программе</string>
     <string name="title_activity_help">Помощь</string>
     <string name="title_activity_activation">Активация</string>
+    <string name="title_action_smsqueuing">Очередь отправки СМС</string>
 
     <string name="action_about">О программе</string>
     <string name="action_help">Помощь</string>
     <string name="action_settings">Настройки</string>
     <string name="log">Журнал</string>
     <string name="action_activation">Активация</string>
+    <string name="action_smsqueuing">Очередь отправки СМС</string>
 
     <string name="btn_cancel">Отмена</string>
     <string name="btn_yes">Да</string>
