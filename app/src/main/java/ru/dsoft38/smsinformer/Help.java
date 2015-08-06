@@ -2,6 +2,7 @@ package ru.dsoft38.smsinformer;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
@@ -10,10 +11,12 @@ import android.widget.TextView;
 /**
  * Created by diesel on 13.07.2015.
  */
-public class Help extends Activity {
+public class Help extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         setContentView(R.layout.help);
         TextView tv = (TextView) findViewById(R.id.help);

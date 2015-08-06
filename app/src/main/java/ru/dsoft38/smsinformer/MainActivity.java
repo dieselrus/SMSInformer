@@ -209,14 +209,14 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
             return true;
+        } else if(id == R.id.action_smsqueuing){
+            Intent i = new Intent(this, SMSQueuing.class);
+            startActivity(i);
         } else if(id == R.id.action_help){
             Intent i = new Intent(this, Help.class);
             startActivity(i);
         } else if(id == R.id.action_about){
             Intent i = new Intent(this, About.class);
-            startActivity(i);
-        } else if(id == R.id.action_smsqueuing){
-            Intent i = new Intent(this, SMSQueuing.class);
             startActivity(i);
         }
 

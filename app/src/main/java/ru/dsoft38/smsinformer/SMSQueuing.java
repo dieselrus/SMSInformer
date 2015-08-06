@@ -3,6 +3,7 @@ package ru.dsoft38.smsinformer;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import java.text.Format;
@@ -13,7 +14,7 @@ import java.util.Date;
 /**
  * Created by diesel on 30.07.2015.
  */
-public class SMSQueuing extends Activity {
+public class SMSQueuing extends AppCompatActivity {
 
     private ListView lvSimple = null;
 
@@ -25,6 +26,8 @@ public class SMSQueuing extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.smsqueuing);
+
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         sms_id = new ArrayList();
         sms_num = new ArrayList();

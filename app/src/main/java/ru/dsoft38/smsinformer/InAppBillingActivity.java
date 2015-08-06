@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +33,7 @@ import ru.dsoft38.smsinformer.util.Purchase;
 /**
  * Created by diesel on 22.07.2015.
  */
-public class InAppBillingActivity extends Activity {
+public class InAppBillingActivity extends AppCompatActivity {
     // id вашей покупки из админки в Google Play
     static final  String TAG = "InAppBillingActivity";
 
@@ -57,6 +58,8 @@ public class InAppBillingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.license_buy);
+
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         Log.d(TAG, "Creating IAB helper.");
         mHelper = new IabHelper(this, BASE64_PUBLIC_KEY);
@@ -269,13 +272,13 @@ public class InAppBillingActivity extends Activity {
             if (mHelper == null) return;
 
             if (result.isFailure()) {
-                complain("Error purchasing: " + result);
+                //complain("Error purchasing: " + result);
                 setWaitScreen(false);
                 return;
             }
 
             if (!verifyDeveloperPayload(purchase)) {
-                complain("Error purchasing. Authenticity verification failed.");
+                //complain("Error purchasing. Authenticity verification failed.");
                 setWaitScreen(false);
                 return;
             }
@@ -342,7 +345,7 @@ public class InAppBillingActivity extends Activity {
                 //alert("You filled 1/4 tank. Your tank is now " + String.valueOf(mTank) + "/4 full!");
             }
             else {
-                complain("Error while consuming: " + result);
+                //complain("Error while consuming: " + result);
             }
             updateUi();
             setWaitScreen(false);
@@ -358,7 +361,7 @@ public class InAppBillingActivity extends Activity {
 
     void complain(String message) {
         Log.e(TAG, "**** SMS Informer Error: " + message);
-        alert("Error: " + message);
+        //alert("Error: " + message);
     }
 
     void alert(String message) {

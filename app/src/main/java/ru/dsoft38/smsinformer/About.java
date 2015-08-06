@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,7 +16,7 @@ import android.widget.TextView;
 /**
  * Created by diesel on 13.07.2015.
  */
-public class About extends Activity {
+public class About extends AppCompatActivity {
     static final  String TAG = "About";
 
     Button btnActivation;
@@ -23,6 +24,9 @@ public class About extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
         setContentView(R.layout.about);
         TextView tv = (TextView) findViewById(R.id.about);
 
