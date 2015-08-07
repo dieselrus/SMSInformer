@@ -55,4 +55,32 @@
     <string name="title_activity_smsqueuing">Queue sending SMS</string>
 
     <string name="pref_header_general">General settings</string>
+	
+	<string-array name="pref_sync_frequency_titles">
+        <item>5 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>1 hour</item>
+        <item>3 hour</item>
+        <item>6 hour</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+	
+	<string-array name="pref_mail_store_protocol_list_titles">
+        <item>imap</item>
+        <!--<item>pop3</item> -->
+    </string-array>
+    <string-array name="pref_mail_store_protocol_list_values">
+        <item>0</item>
+        <!--<item>1</item>-->
+    </string-array>
 </resources>
