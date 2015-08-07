@@ -1,5 +1,33 @@
 <resources>
-    <string name="title_activity_settings">Settings</string>
+    <string name="app_name">SMS информатор</string>
+
+    <string name="title_activity_about">О программе</string>
+    <string name="title_activity_help">Помощь</string>
+    <string name="title_activity_activation">Активация</string>
+    <string name="title_action_smsqueuing">Очередь отправки СМС</string>
+
+    <string name="action_about">О программе</string>
+    <string name="action_help">Помощь</string>
+    <string name="action_settings">Настройки</string>
+    <string name="log">Журнал</string>
+    <string name="action_activation">Активация</string>
+    <string name="action_smsqueuing">Очередь отправки СМС</string>
+
+    <string name="action_clean_smsqueuing">Очистить очередь</string>
+
+    <string name="btn_cancel">Отмена</string>
+    <string name="btn_yes">Да</string>
+    <string name="btn_buy">Купить</string>
+
+    <string name="activation_title_purchase">Выберите вариант активации</string>
+    <string name="activation_month_trial">Пробная версия на 30 дней (далее автоматически будет списываться абонентская плата за месяц)</string>
+    <string name="activation_month">Ежемесячная подписка</string>
+    <string name="activation_year">Годовая подписка</string>
+    <string name="activation_purchase">Купить программу</string>
+    <string name="activation_help">Отменить подписку можно через Google Play Market (оплата за подписку возвращена не будет).</string>
+
+
+	<string name="title_activity_settings">Settings</string>
 
     <string name="pref_header_general">Основные</string>
 
@@ -73,5 +101,5 @@
     <string name="pref_title_max_sms_count_in_one_mail">Максимальное количество СМС</string>
     <string name="pref_summary_max_sms_in_one_mail">Максимальное количество СМС для отправки по одному номеру из одного email сообщения</string>
     <string name="pref_default_max_sms_count_in_one_mail">3</string>
-
+    <string name="title_activity_smsqueuing">Очередь отправки СМС</string>
 </resources>

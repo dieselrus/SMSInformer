@@ -212,12 +212,15 @@ public class MainActivity extends AppCompatActivity {
         } else if(id == R.id.action_smsqueuing){
             Intent i = new Intent(this, SMSQueuing.class);
             startActivity(i);
+            return true;
         } else if(id == R.id.action_help){
             Intent i = new Intent(this, Help.class);
             startActivity(i);
+            return true;
         } else if(id == R.id.action_about){
             Intent i = new Intent(this, About.class);
             startActivity(i);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

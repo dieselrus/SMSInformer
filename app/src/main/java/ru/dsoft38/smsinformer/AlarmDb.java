@@ -83,6 +83,16 @@ public class AlarmDb {
         return database.rawQuery("SELECT _id, phones, msg FROM tbSendSms", null);
     }
 
+    public static boolean clean_smsqueuing(){
+
+        if(!database.isOpen())
+            open();
+        database.delete(TB_SEND_SMS, null, null);
+        //close();
+
+        return false;
+    }
+
     public boolean delete_old_log(String _id){
 
         if(!database.isOpen())
