@@ -43,11 +43,14 @@ public class About extends AppCompatActivity {
         }
 
         tv.setGravity(Gravity.CENTER);
+        String str = tv.getText().toString();
+        /*
         tv.setText(Html.fromHtml("<html><body><h1>&nbsp;</h1><p style=\"text-align: center;\"><strong>О программе</strong></p>" +
                 "<p>Программа предназначена для трансляции определенных электронных писем на телефоны посредством СМС сообщений.</p>" +
                 "<p>&nbsp;</p><p><strong>Автор: </strong>Гамза Денис.</p><p><strong>E-mail: </strong><a href=\"mailto:denis.gamza@gmail.com\">denis.gamza@gmail.com</a></p>" +
                 "</body></html>") + String.format("Версия программы: %s \n\r", getVersion()) + String.format("Лицензия: %s", License));
-
+        */
+        tv.setText(Html.fromHtml(str) + String.format( getString(R.string.about_text),getVersion(),License));
         /*tv.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 finish();

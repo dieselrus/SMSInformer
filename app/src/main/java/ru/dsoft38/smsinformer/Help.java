@@ -21,6 +21,7 @@ public class Help extends AppCompatActivity {
         setContentView(R.layout.help);
         TextView tv = (TextView) findViewById(R.id.help);
         tv.setGravity(Gravity.CENTER);
+        /*
         tv.setText(Html.fromHtml("<p><strong>Пример содержания письма</strong></p>" +
                         "<p><strong>Тема письма:</strong></p>" +
                         "<p>SMSINFORMER <em>(должна совпадать с темой в настройках программы)</em></p>" +
@@ -31,11 +32,12 @@ public class Help extends AppCompatActivity {
                         "<li><p>В теге <strong><em>&lt;</em></strong><strong><em>MessageText&gt;&lt;/</em></strong><strong><em>MessageText&gt; </em></strong>должен содержаться\n текст сообщения.</p></li>" +
                         "<ul>"
         ));
-
+        */
+        tv.setText(Html.fromHtml(getString(R.string.help_text_html)));
         tv.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                finish();
-            }
-        });
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
     }
 }

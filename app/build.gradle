@@ -8,8 +8,8 @@ android {
         applicationId "ru.dsoft38.smsinformer"
         minSdkVersion 8
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.08"
+        versionCode 9
+        versionName "1.09"
     }
     buildTypes {
         release {

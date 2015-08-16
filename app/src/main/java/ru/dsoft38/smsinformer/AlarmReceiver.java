@@ -33,7 +33,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     static void scheduleAlarms(Context ctxt, long TIME) {
-        //Pref.getPref(ctxt);
+        Pref.getPref(ctxt);
+        Pref.getLicense(ctxt);
         startReceiveService(ctxt);
         startInformerService(ctxt, TIME);
     }
