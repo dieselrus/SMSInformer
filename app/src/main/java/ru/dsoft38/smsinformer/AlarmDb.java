@@ -110,11 +110,14 @@ public class AlarmDb {
     public AlarmDb(Context context) {
         String DATABASE_NAME = "smsinformer";
         String FILE_DIR = "Android"; //"Android/data/ru.dsoft38.smsinformer";
+        String PACKAGE_NAME = context.getPackageName();
+
         databaseOpenHelper = new DatabaseOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
 
         /*
         String path = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + FILE_DIR
+                + File.separator + PACKAGE_NAME
                 + File.separator + DATABASE_NAME;
 
         boolean mExternalStorageAvailable = false;
