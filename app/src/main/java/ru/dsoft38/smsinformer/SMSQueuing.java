@@ -53,8 +53,8 @@ public class SMSQueuing extends AppCompatActivity {
             c = AlarmDb.select_smsqueuing();
 
             sms_id.add("id");
-            sms_num.add("Получатель");
-            sms_text.add("Текст");
+            sms_num.add(getString(R.string.sms_queuing_table_phone));
+            sms_text.add(getString(R.string.sms_queuing_table_message));
 
             if (c != null) while (c.moveToNext()) {
                 sms_id.add(c.getString(0));
@@ -87,9 +87,9 @@ public class SMSQueuing extends AppCompatActivity {
         if (id == R.id.action_clean_smsqueuing) {
 
             if(AlarmDb.clean_smsqueuing()){
-                alert("");
+                alert(getString(R.string.sms_queuing_clear_ok));
             }else{
-                alert("");
+                alert(getString(R.string.sms_queuing_not_clear));
             }
 
             return true;
