@@ -74,7 +74,7 @@ public class SMSSend {
         */
         // Удаляем не нужные символы
         //String phone = arrayNum[currentSMSNumberIndex].replace("-", "").replace(";", "").replace(" ", "").trim();
-        String phone = phoneNum.replace("-", "").replace(";", "").replace(" ", "").trim();
+        String phone = phoneNum.replace("-", "").replace(";", "").replace(" ", "").replace("\u00A0","").trim();
 
         // Проверяем длину номера 11 символов или 12, если с +
         if (phone.length() != 0 && (phone.length() == 11 || (phone.substring(0, 1).equals("+") && phone.length() == 12))) {

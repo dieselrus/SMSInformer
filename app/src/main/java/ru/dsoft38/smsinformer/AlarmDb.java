@@ -28,7 +28,7 @@ public class AlarmDb {
 
     public static void insertAlarm(String NUMBER, String GROUPID, String MSG) {
         ContentValues data = new ContentValues();
-        data.put("phones", NUMBER);
+        data.put("phones", NUMBER.replace("-", "").replace(";", "").replace(" ", "").replace("\u00A0","").trim());
         data.put("groupid", GROUPID);
         data.put("msg", MSG);
 
