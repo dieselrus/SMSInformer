@@ -1,11 +1,15 @@
 package ru.dsoft38.smsinformer;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -36,7 +40,35 @@ public class AlarmReceiver extends BroadcastReceiver {
         Pref.getPref(ctxt);
         Pref.getLicense(ctxt);
         startReceiveService(ctxt);
-        startInformerService(ctxt, TIME);
+
+        // Проверяем вхождение времени в разрешенный интерва
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        boolean isSplit = false;
+        boolean isWithin = false;
+
+        Date dt1 = null, dt2 = null, dt3 = null;
+
+        try {
+            dt1 = sdf.parse(Pref.prefSendSMSTimeFirst);
+            dt2 = sdf.parse(Pref.prefSendSMSTimeLast);
+            dt3 = sdf.parse(sdf.format(new Date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        isSplit = (dt2.compareTo(dt1) < 0);
+
+        if (isSplit) {
+            isWithin = (dt3.after(dt1) || dt3.before(dt2));
+        } else {
+            isWithin = (dt3.after(dt1) && dt3.before(dt2));
+        }
+
+        if(isWithin) {
+            startInformerService(ctxt, TIME);
+        } else {
+            startInformerService(ctxt, TIME);
+        }
     }
 
     static void startInformerService(Context context, long UTIME) {
